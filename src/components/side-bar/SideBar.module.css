@@ -1,0 +1,17 @@
+.side-bar {
+    width: 200px;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background-color: #f8f8f8;
+    border-right: 1px solid #ccc;
+    transition: 0.3s;
+    z-index: 1055;
+}
+
+.close-icon {
+    font-size: 2em;
+    color: #666;
+    cursor: pointer;
+}
