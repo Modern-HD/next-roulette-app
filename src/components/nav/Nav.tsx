@@ -1,27 +1,21 @@
 'use client';
 
-import { faBars, faMagnifyingGlass } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import styles from '@/components/nav/Nav.module.css';
-import { useAppDispatch } from '@/store/configureStore';
-import { modalToggle } from '@/store/modalSlice';
 
 interface Props {
-    leftBtn: JSX.Element;
-    title: string;
-    rightBtn: JSX.Element;
+    leftBtn?: JSX.Element;
+    title?: string;
+    rightBtn?: JSX.Element;
+    className?: string;
 }
 
-export default function Nav() {
-    const dispatch = useAppDispatch();
+export default function Nav({ leftBtn, title, rightBtn, className }: Props) {
     return (
-        <nav className="container-box text-white text-bold text-2xl pt-4">
+        <nav className={'container-box text-white text-bold text-2xl pt-4 ' + (className ? className : '')}>
             <div className="flex justify-between">
-                <div onClick={() => dispatch(modalToggle('sideBar'))}>
-                    <FontAwesomeIcon icon={faBars} className={styles['nav-icon']} />
-                </div>
-                <div>룰렛</div>
-                <FontAwesomeIcon icon={faMagnifyingGlass} className={styles['nav-icon']} />
+                <div className={styles['nav-icon']}>{leftBtn}</div>
+                <div>{title}</div>
+                <div className={styles['nav-icon']}>{rightBtn}</div>
             </div>
         </nav>
     );

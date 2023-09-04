@@ -1,3 +1,5 @@
+import SearchBtn from '@/components/button/SearchBtn';
+import SideBarOpenBtn from '@/components/button/SideBarOpenBtn';
 import RouletteSetCardList from '@/components/card/RouletteSetCardList';
 import Nav from '@/components/nav/Nav';
 import SideBar from '@/components/side-bar/SideBar';
@@ -16,7 +18,7 @@ export default function Home() {
             <div className="container-box h-full">
                 <SideBar />
                 <div className="h-full flex flex-col pb-5">
-                    <Nav />
+                    <Nav leftBtn={<SideBarOpenBtn />} title={'오늘의 룰렛'} rightBtn={<SearchBtn />} />
                     <div className="flex-1 flex flex-col justify-center text-white text-2xl">
                         {!userData && (
                             <div>

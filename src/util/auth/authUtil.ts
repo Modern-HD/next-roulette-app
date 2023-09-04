@@ -5,6 +5,7 @@ import { SupabaseClient } from '@supabase/supabase-js';
 export async function getUser(
     supabase: SupabaseClient<Database>,
 ): Promise<null | Pick<IUser, 'idx' | 'nick_name' | 'created_at'>> {
+    if (!(await supabase.auth.getSession()).data.session) return null;
     const { data: sesData } = await supabase.auth.getUser();
     if (!sesData || !sesData.user) return null;
     const { data: userData } = await supabase

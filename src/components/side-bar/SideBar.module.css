@@ -6,8 +6,8 @@
     left: 0;
     background-color: #f8f8f8;
     border-right: 1px solid #ccc;
-    transition: 0.3s;
     z-index: 1055;
+    transition: 0.3s;
 }
 
 .close-icon {

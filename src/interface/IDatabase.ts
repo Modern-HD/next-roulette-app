@@ -24,6 +24,40 @@ export interface Database {
                 };
                 Relationships: [];
             };
+            play_data: {
+                Row: {
+                    created_at: string;
+                    idx: number;
+                    result_section: number;
+                    user_idx: number;
+                };
+                Insert: {
+                    created_at?: string;
+                    idx?: number;
+                    result_section: number;
+                    user_idx: number;
+                };
+                Update: {
+                    created_at?: string;
+                    idx?: number;
+                    result_section?: number;
+                    user_idx?: number;
+                };
+                Relationships: [
+                    {
+                        foreignKeyName: 'play_data_result_section_fkey';
+                        columns: ['result_section'];
+                        referencedRelation: 'roulette_section';
+                        referencedColumns: ['idx'];
+                    },
+                    {
+                        foreignKeyName: 'play_data_user_idx_fkey';
+                        columns: ['user_idx'];
+                        referencedRelation: 'user';
+                        referencedColumns: ['idx'];
+                    },
+                ];
+            };
             roulette_section: {
                 Row: {
                     created_at: string;

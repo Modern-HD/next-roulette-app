@@ -10,10 +10,9 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/interface/IDatabase';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import { getUser } from '@/util/auth/authUtil';
 import IUser from '@/interface/IUser';
-import { logoutAction } from '@/util/server-action/signUtil';
+import { logoutAction } from '@/util/server-actions/signAction';
 
 export default function SideBar() {
     const { sideBar: sideBarOpen } = useSelector((state: RootState) => state.modal);
@@ -43,6 +42,11 @@ export default function SideBar() {
             {!user && (
                 <Link className="text-center border-t-2 py-2 border-gray-300 cursor-pointer block" href={'/login'}>
                     로그인
+                </Link>
+            )}
+            {!user && (
+                <Link className="text-center border-t-2 py-2 border-gray-300 cursor-pointer block" href={'/join'}>
+                    회원 가입
                 </Link>
             )}
             {user && <div className="text-center border-t-2 py-2 border-gray-300 block">{user.nick_name}</div>}
