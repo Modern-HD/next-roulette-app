@@ -10,25 +10,22 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Database } from '@/interface/IDatabase';
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { getUser } from '@/util/auth/authUtil';
+import IUser from '@/interface/IUser';
+import { logoutAction } from '@/util/server-action/signUtil';
 
 export default function SideBar() {
     const { sideBar: sideBarOpen } = useSelector((state: RootState) => state.modal);
-    const [user, setUser] = useState<null | { idx: number; nickName: string }>();
+    const [user, setUser] = useState<null | Pick<IUser, 'idx' | 'nick_name'>>();
     const supabase = createClientComponentClient<Database>();
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        const getData = async () => {
-            const { data: sesData } = await supabase.auth.getUser();
-            if (!sesData || !sesData.user) return;
-            const { data: userData } = await supabase
-                .from('user')
-                .select('*')
-                .eq('uuid', sesData.user?.id);
-            if (!userData || !userData[0]) return;
-            setUser({ idx: userData[0].idx, nickName: userData[0].nick_name });
-        };
-        getData();
+        getUser(supabase).then(userData => {
+            if (!userData) return;
+            setUser({ idx: userData.idx, nick_name: userData.nick_name });
+        });
     }, [sideBarOpen, supabase]);
 
     return (
@@ -48,15 +45,16 @@ export default function SideBar() {
                     로그인
                 </Link>
             )}
+            {user && <div className="text-center border-t-2 py-2 border-gray-300 block">{user.nick_name}</div>}
             {user && (
                 <Link className="text-center border-t-2 py-2 border-gray-300 block" href={'/mypage'}>
                     마이페이지
                 </Link>
             )}
             {user && (
-                <Link className="text-center border-t-2 py-2 border-gray-300 block" href={'/auth/logout'}>
-                    로그아웃
-                </Link>
+                <form action={logoutAction}>
+                    <button className="text-center border-t-2 py-2 border-gray-300 block w-full">로그아웃</button>
+                </form>
             )}
         </aside>
     );

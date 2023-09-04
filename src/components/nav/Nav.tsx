@@ -6,6 +6,12 @@ import styles from '@/components/nav/Nav.module.css';
 import { useAppDispatch } from '@/store/configureStore';
 import { modalToggle } from '@/store/modalSlice';
 
+interface Props {
+    leftBtn: JSX.Element;
+    title: string;
+    rightBtn: JSX.Element;
+}
+
 export default function Nav() {
     const dispatch = useAppDispatch();
     return (

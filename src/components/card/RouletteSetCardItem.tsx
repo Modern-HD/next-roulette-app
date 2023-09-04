@@ -1,21 +1,15 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
+import { RsItem } from './RouletteSetCardList';
 
 interface Props {
-    data: {
-        idx: number;
-        title: string;
-        description: string;
-        play_count: number;
-        user: {
-            nick_name: string;
-        };
-    };
+    data: RsItem;
 }
 
-export default function RouletteSetCard({
+export default function RouletteSetCardItem({
     data: {
         idx,
         title,
@@ -62,12 +56,13 @@ export default function RouletteSetCard({
                     <div className="mb-5 font-bold">{nick_name}</div>
                     <div className="flex-1 flex mb-3">{description}</div>
                     <div className="flex flex-col gap-2">
-                        <button className="bg-white text-black px-2 py-2 rounded-sm mx-auto" style={{ width: 150 }}>
+                        <Link
+                            className="bg-white text-black px-2 py-2 rounded-sm mx-auto text-center"
+                            style={{ width: 150 }}
+                            href={`/play/${idx}`}
+                        >
                             플레이
-                        </button>
-                        <button className="bg-slate-300 text-black px-2 py-2 rounded-sm mx-auto" style={{ width: 150 }}>
-                            수정하기
-                        </button>
+                        </Link>
                     </div>
                 </div>
             </div>
