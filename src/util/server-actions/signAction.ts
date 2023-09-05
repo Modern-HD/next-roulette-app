@@ -23,8 +23,7 @@ export async function joinAction(data: FormData) {
         email,
         password,
     });
-    console.log(error);
-    console.log(user);
+
     if (error && error.message === 'To signup, please provide your email') return redirect('/join?msg=incorrectEmail');
     if (error && error.message.startsWith('Unable to validate email address'))
         return redirect('/join?msg=incorrectEmail');
