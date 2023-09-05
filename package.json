@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "supabase:gen": "dotenv -e .env.local -- cross-var npx supabase gen types typescript --project-id %PROJECT_ID% --schema public > src/interface/IDatabase.ts",
+    "drizzle:gen": "drizzle-kit generate:pg"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
@@ -34,6 +36,7 @@
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "cross-var": "^1.1.0",
     "drizzle-kit": "^0.19.13",
     "encoding": "^0.1.13",
     "eslint-config-prettier": "^9.0.0",

@@ -45,13 +45,13 @@ export interface Database {
                 };
                 Relationships: [
                     {
-                        foreignKeyName: 'play_data_result_section_fkey';
+                        foreignKeyName: 'play_data_result_section_roulette_section_idx_fk';
                         columns: ['result_section'];
                         referencedRelation: 'roulette_section';
                         referencedColumns: ['idx'];
                     },
                     {
-                        foreignKeyName: 'play_data_user_idx_fkey';
+                        foreignKeyName: 'play_data_user_idx_user_idx_fk';
                         columns: ['user_idx'];
                         referencedRelation: 'user';
                         referencedColumns: ['idx'];
@@ -85,7 +85,7 @@ export interface Database {
                 };
                 Relationships: [
                     {
-                        foreignKeyName: 'roulette_section_roulette_set_idx_fkey';
+                        foreignKeyName: 'roulette_section_roulette_set_idx_roulette_set_idx_fk';
                         columns: ['roulette_set_idx'];
                         referencedRelation: 'roulette_set';
                         referencedColumns: ['idx'];
@@ -108,7 +108,7 @@ export interface Database {
                     created_at?: string;
                     description: string;
                     idx?: number;
-                    play_count?: number;
+                    play_count: number;
                     title: string;
                     updated_at?: string;
                     user_idx: number;
@@ -125,13 +125,13 @@ export interface Database {
                 };
                 Relationships: [
                     {
-                        foreignKeyName: 'roulette_set_category_idx_fkey';
+                        foreignKeyName: 'roulette_set_category_idx_category_idx_fk';
                         columns: ['category_idx'];
                         referencedRelation: 'category';
                         referencedColumns: ['idx'];
                     },
                     {
-                        foreignKeyName: 'roulette_set_user_idx_fkey';
+                        foreignKeyName: 'roulette_set_user_idx_user_idx_fk';
                         columns: ['user_idx'];
                         referencedRelation: 'user';
                         referencedColumns: ['idx'];
