@@ -60,6 +60,7 @@ export interface Database {
             };
             roulette_section: {
                 Row: {
+                    content: string;
                     created_at: string;
                     idx: number;
                     location: number;
@@ -68,6 +69,7 @@ export interface Database {
                     weight: number;
                 };
                 Insert: {
+                    content: string;
                     created_at?: string;
                     idx?: number;
                     location: number;
@@ -76,6 +78,7 @@ export interface Database {
                     weight?: number;
                 };
                 Update: {
+                    content?: string;
                     created_at?: string;
                     idx?: number;
                     location?: number;
@@ -99,6 +102,7 @@ export interface Database {
                     description: string;
                     idx: number;
                     play_count: number;
+                    public: boolean;
                     title: string;
                     updated_at: string;
                     user_idx: number;
@@ -109,6 +113,7 @@ export interface Database {
                     description: string;
                     idx?: number;
                     play_count: number;
+                    public?: boolean;
                     title: string;
                     updated_at?: string;
                     user_idx: number;
@@ -119,6 +124,7 @@ export interface Database {
                     description?: string;
                     idx?: number;
                     play_count?: number;
+                    public?: boolean;
                     title?: string;
                     updated_at?: string;
                     user_idx?: number;
