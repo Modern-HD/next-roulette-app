@@ -12,13 +12,13 @@ const modalSlice = createSlice({
     name: 'modal',
     initialState,
     reducers: {
-        modalOpen: (state, action: PayloadAction<keyof ModalState>) => {
+        modalOpen(state, action: PayloadAction<keyof ModalState>) {
             state[action.payload] = true;
         },
-        modalClose: (state, action: PayloadAction<keyof ModalState>) => {
+        modalClose(state, action: PayloadAction<keyof ModalState>) {
             state[action.payload] = false;
         },
-        modalToggle: (state, action: PayloadAction<keyof ModalState>) => {
+        modalToggle(state, action: PayloadAction<keyof ModalState>) {
             state[action.payload] = !state[action.payload];
         },
     },

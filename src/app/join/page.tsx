@@ -1,5 +1,6 @@
 'use client';
 
+import BackBtn from '@/components/button/BackBtn';
 import HomeBtn from '@/components/button/HomeBtn';
 import Nav from '@/components/nav/Nav';
 import { joinAction } from '@/util/server-actions/signAction';
@@ -24,9 +25,9 @@ export default function Join({ searchParams }: { searchParams: Params }) {
         });
     }, [router, searchParams.msg]);
     return (
-        <div className="bg-default h-full flex flex-col justify-center items-center p-3">
-            <Nav leftBtn={<HomeBtn />} title="회원 가입" className="absolute top-0" />
-            <form action={joinAction} className="flex flex-col bg-white p-5">
+        <>
+            <Nav leftBtn={<BackBtn />} title="회원 가입" rightBtn={<HomeBtn />} />
+            <form action={joinAction} className="flex flex-col bg-white p-10 rounded-2xl absolute-center">
                 <label htmlFor="email">이메일</label>
                 <input id="email" name="email" className="mb-2 border-b-2 border-orange-200" />
                 <label htmlFor="nick-name">닉네임</label>
@@ -42,6 +43,6 @@ export default function Join({ searchParams }: { searchParams: Params }) {
                 />
                 <button className="bg-orange-400 rounded-lg py-2 text-white">회원 가입</button>
             </form>
-        </div>
+        </>
     );
 }
