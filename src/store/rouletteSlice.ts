@@ -2,32 +2,32 @@ import IRouletteSection from '@/interface/IRouletteSection';
 import IRouletteSet from '@/interface/IRouletteSet';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-type Mode = 'IDLE' | 'EDIT' | 'PLAY';
-type RouletteState<T extends Mode> = T extends 'IDLE'
-    ? {
-          mode: T;
-          set?: undefined;
-          section?: undefined;
-      }
-    : T extends 'EDIT'
-    ? {
-          mode: T;
-          set: Partial<IRouletteSet>;
-          section: Partial<IRouletteSection>[];
-      }
+type RouletteMode = 'IDLE' | 'EDIT' | 'PLAY';
+
+type Section<T> = T extends 'EDIT'
+    ? Omit<IRouletteSection, 'roulette_set_idx' | 'location' | 'idx' | 'created_at' | 'updated_at'>[]
     : T extends 'PLAY'
-    ? {
-          mode: T;
-      } & RoulettePlayResetPayload
+    ? IRouletteSection[]
     : undefined;
 
-type RoulettePlayResetPayload = {
-    set: IRouletteSet;
-    section: IRouletteSection[];
-};
+type Set<T> = T extends 'EDIT'
+    ? Omit<IRouletteSet, 'idx' | 'created_at' | 'updated_at' | 'user_idx' | 'play_count'>
+    : T extends 'PLAY'
+    ? IRouletteSet[]
+    : undefined;
 
-const initialState: RouletteState<Mode> = {
+type RoulettePlayResetPayload = Pick<IRouletteState<'PLAY'>, 'set' | 'section'>;
+
+export interface IRouletteState<T extends RouletteMode> {
+    mode: T;
+    set: Set<T>;
+    section: Section<T>;
+}
+
+const initialState: IRouletteState<RouletteMode> = {
     mode: 'IDLE',
+    set: undefined,
+    section: undefined,
 };
 
 const rouletteSlice = createSlice({
@@ -39,18 +39,32 @@ const rouletteSlice = createSlice({
             state.set = undefined;
             state.section = undefined;
         },
-        rouletteEditReset(state: RouletteState<Mode>) {
+        rouletteEditReset(state: IRouletteState<RouletteMode>) {
             state.mode = 'EDIT';
-            state.set = {};
+            state.set = { title: '', description: '', public: false, category_idx: 0 };
             state.section = [];
         },
-        roulettePlayReset(state: RouletteState<Mode>, action: PayloadAction<RoulettePlayResetPayload>) {
+        roulettePlayReset(state: IRouletteState<RouletteMode>, action: PayloadAction<RoulettePlayResetPayload>) {
             state.mode = 'PLAY';
             state.set = action.payload.set;
             state.section = action.payload.section;
         },
+        rouletteAddSection(state: IRouletteState<RouletteMode>) {
+            if (state.mode !== 'EDIT') return state;
+            (state as IRouletteState<'EDIT'>).section?.push({
+                content: '새 항목',
+                weight: 10000,
+            });
+            return state;
+        },
+        rouletteRemoveSection(state: IRouletteState<RouletteMode>, action: PayloadAction<number>) {
+            if (state.mode !== 'EDIT') return state;
+            (state as IRouletteState<'EDIT'>).section?.splice(action.payload, 1);
+            return state;
+        },
     },
 });
 
-export const { rouletteReset, rouletteEditReset, roulettePlayReset } = rouletteSlice.actions;
+export const { rouletteReset, rouletteEditReset, roulettePlayReset, rouletteAddSection, rouletteRemoveSection } =
+    rouletteSlice.actions;
 export default rouletteSlice.reducer;

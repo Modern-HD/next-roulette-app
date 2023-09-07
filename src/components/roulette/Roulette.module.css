@@ -2,7 +2,7 @@
     position: relative;
     border: 6px solid #555;
     border-radius: 50%;
-    background-color: #f8f8f8;
+    background-color: #ccc;
     overflow: hidden;
     box-shadow:
         0 4px 8px 0 rgba(0, 0, 0, 0.2),
@@ -27,7 +27,17 @@
     position: absolute;
     top: 50%;
     left: 0;
-    border: 1px solid black;
+    border: 2px solid #555;
+}
+
+.roulette-content {
+    width: 50%;
+    position: absolute;
+    top: 50%;
+    left: 0;
+    padding-left: 3%;
+    transform: translateY(-50%);
+    text-align: end;
 }
 
 .roulette-center {
@@ -38,7 +48,7 @@
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
-    border: 3px solid #333;
+    border: 5px solid #555;
     border-radius: 50%;
     z-index: 20;
 }
