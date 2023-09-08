@@ -1,13 +1,12 @@
 import IRouletteSection from '@/interface/IRouletteSection';
 import styles from './Roulette.module.css';
+import { sectionColor } from '@/util/rouletteUtil';
 
 export interface RouletteSectionProps {
     totalWeight: number;
     accWeight: number;
     data: Pick<IRouletteSection, 'weight' | 'content' | 'location'>;
 }
-
-const color = ['#88C5FA', '#95E2EC', '#FFF9BE', '#FAD6DD', '#D0C6E9', '#FFA477'];
 
 export default function RouletteSection({ totalWeight, accWeight, data }: RouletteSectionProps) {
     const wDeg = Math.round((data.weight / totalWeight) * 360 * 1000) / 1000;
@@ -17,9 +16,7 @@ export default function RouletteSection({ totalWeight, accWeight, data }: Roulet
             <div
                 className={styles['roulette-section']}
                 style={{
-                    background: `conic-gradient(${
-                        color[data.location % color.length]
-                    } ${wDeg}deg, #ffffff00 ${wDeg}deg)`,
+                    background: `conic-gradient(${sectionColor(data.location)} ${wDeg}deg, #ffffff00 ${wDeg}deg)`,
                     transform: `rotate(${aDeg}deg)`,
                 }}
             ></div>

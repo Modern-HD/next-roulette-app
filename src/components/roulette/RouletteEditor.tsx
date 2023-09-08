@@ -7,6 +7,7 @@ import { getUser } from '@/util/auth/authUtil';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import styles from './Roulette.module.css';
 
 export default function RouletteEditor() {
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'IDLE' | 'EDIT'>;
@@ -24,9 +25,9 @@ export default function RouletteEditor() {
     if (roulette.mode === 'IDLE') return <></>;
 
     return (
-        <div className="bg-default w-10/12 lg:w-8/12 rounded-lg overflow-hidden flex-col shadow-lg">
+        <div className="bg-default w-10/12 lg:w-8/12 rounded-lg overflow-hidden flex-col shadow-lg my-5">
             <div className=" text-white text-center text-2xl font-bold py-2">룰렛 항목</div>
-            <div className="bg-white p-0">
+            <div className={`hide-scroll ${styles['roulette-section-list']}`}>
                 {(roulette as IRouletteState<'EDIT'>).section.length < 1 && (
                     <div className="text-center py-2">항목이 없습니다.</div>
                 )}

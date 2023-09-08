@@ -14,7 +14,7 @@ export default function Home() {
     const supabase = createServerComponentClient<Database>({ cookies });
     const userData = use(getUser(supabase));
     return (
-        <>
+        <div className="h-screen">
             <SideBar />
             <div className="h-full flex flex-col pb-5">
                 <Nav leftBtn={<SideBarOpenBtn />} title={'오늘의 룰렛'} rightBtn={<SearchBtn />} />
@@ -54,6 +54,6 @@ export default function Home() {
                 </div>
                 <RouletteSetCardList />
             </div>
-        </>
+        </div>
     );
 }

@@ -24,7 +24,7 @@
 }
 
 .roulette-content {
-    @apply top-1/2 left-0 absolute w-1/2 text-center;
+    @apply top-1/2 left-0 absolute w-1/2 text-end;
     padding-left: 3%;
     transform: translateY(-50%);
 }

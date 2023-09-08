@@ -25,9 +25,9 @@ export default function Join({ searchParams }: { searchParams: Params }) {
         });
     }, [router, searchParams.msg]);
     return (
-        <>
+        <div className="h-screen">
             <Nav leftBtn={<BackBtn />} title="회원 가입" rightBtn={<HomeBtn />} />
-            <form action={joinAction} className="flex flex-col bg-white p-10 rounded-2xl absolute-center">
+            <form action={joinAction} className="flex flex-col bg-white p-10 rounded-2xl absolute-center shadow-lg">
                 <label htmlFor="email">이메일</label>
                 <input id="email" name="email" className="mb-2 border-b-2 border-orange-200" />
                 <label htmlFor="nick-name">닉네임</label>
@@ -43,6 +43,6 @@ export default function Join({ searchParams }: { searchParams: Params }) {
                 />
                 <button className="bg-orange-400 rounded-lg py-2 text-white">회원 가입</button>
             </form>
-        </>
+        </div>
     );
 }

@@ -18,9 +18,9 @@ export default function Login({ searchParams }: { searchParams: Params }) {
         }
     }, [router, searchParams.msg]);
     return (
-        <>
+        <div className="h-screen">
             <Nav leftBtn={<BackBtn />} title="로그인" rightBtn={<HomeBtn />} />
-            <div className="rounded-2xl flex flex-col md:flex-row overflow-hidden absolute-center">
+            <div className="rounded-2xl flex flex-col md:flex-row overflow-hidden absolute-center shadow-lg">
                 <div className="bg-default p-5 text-white flex flex-col justify-between">
                     <h2 className="text-2xl font-bold mb-2">로그인 하면 얻는 혜택</h2>
                     <ul className="pl-4 list-disc font-semibold mb-5">
@@ -39,6 +39,6 @@ export default function Login({ searchParams }: { searchParams: Params }) {
                     <button className="bg-orange-400 rounded-lg py-2 text-white font-bold">로그인</button>
                 </form>
             </div>
-        </>
+        </div>
     );
 }

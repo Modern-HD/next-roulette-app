@@ -59,7 +59,7 @@ export default function RouletteSetCardItem({
                         <Link
                             className="bg-white text-black px-2 py-2 rounded-sm mx-auto text-center"
                             style={{ width: 150 }}
-                            href={`/play/${idx}`}
+                            href={`/roulette/play/${idx}`}
                         >
                             플레이
                         </Link>

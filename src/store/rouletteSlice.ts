@@ -42,7 +42,16 @@ const rouletteSlice = createSlice({
         rouletteEditReset(state: IRouletteState<RouletteMode>) {
             state.mode = 'EDIT';
             state.set = { title: '', description: '', public: false, category_idx: 0 };
-            state.section = [];
+            state.section = [
+                {
+                    content: '새 항목 1',
+                    weight: 10000,
+                },
+                {
+                    content: '새 항목 2',
+                    weight: 10000,
+                },
+            ];
         },
         roulettePlayReset(state: IRouletteState<RouletteMode>, action: PayloadAction<RoulettePlayResetPayload>) {
             state.mode = 'PLAY';
@@ -52,13 +61,17 @@ const rouletteSlice = createSlice({
         rouletteAddSection(state: IRouletteState<RouletteMode>) {
             if (state.mode !== 'EDIT') return state;
             (state as IRouletteState<'EDIT'>).section?.push({
-                content: '새 항목',
+                content: `새 항목 ${state.section!.length + 1}`,
                 weight: 10000,
             });
             return state;
         },
         rouletteRemoveSection(state: IRouletteState<RouletteMode>, action: PayloadAction<number>) {
             if (state.mode !== 'EDIT') return state;
+            if (state.section && state.section.length < 3) {
+                alert('항목은 최소 2개 이상이여야 합니다.');
+                return state;
+            }
             (state as IRouletteState<'EDIT'>).section?.splice(action.payload, 1);
             return state;
         },

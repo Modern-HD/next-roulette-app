@@ -14,7 +14,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ReduxProvider>
             <html lang="ko">
                 <body className="bg-default">
-                    <main className="w-full h-full flex flex-col justify-center items-center overflow-hidden">
+                    <main className="w-full h-full">
                         <div className="container-box h-full">{children}</div>
                     </main>
                 </body>
