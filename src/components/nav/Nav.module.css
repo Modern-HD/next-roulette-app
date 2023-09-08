@@ -1,4 +1,4 @@
 .nav-icon {
+    @apply cursor-pointer;
     width: 1em;
-    cursor: pointer;
 }

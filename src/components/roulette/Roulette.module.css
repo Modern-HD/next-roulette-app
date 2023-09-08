@@ -1,54 +1,39 @@
 .roulette-root {
-    position: relative;
+    @apply relative overflow-hidden;
     border: 6px solid #555;
     border-radius: 50%;
     background-color: #ccc;
-    overflow: hidden;
     box-shadow:
         0 4px 8px 0 rgba(0, 0, 0, 0.2),
         0 6px 20px 0 rgba(0, 0, 0, 0.19);
 }
 
 .roulette-pad {
-    width: 100%;
-    height: 0;
+    @apply w-full h-0;
     padding-bottom: 100%;
 }
 
 .roulette-section {
-    width: 100%;
-    height: 100%;
-    position: absolute;
-    top: 0;
+    @apply w-full h-full absolute top-0;
 }
 
 .roulette-border {
-    width: 50%;
-    position: absolute;
-    top: 50%;
-    left: 0;
+    @apply w-1/2 absolute top-1/2 left-0;
     border: 2px solid #555;
     transform: translateY(-50%);
 }
 
 .roulette-content {
-    width: 50%;
-    position: absolute;
-    top: 50%;
-    left: 0;
+    @apply top-1/2 left-0 absolute w-1/2 text-center;
     padding-left: 3%;
     transform: translateY(-50%);
-    text-align: end;
 }
 
 .roulette-center {
+    @apply absolute top-1/2 left-1/2 bg-white z-20;
     width: 8%;
     height: 8%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
     transform: translate(-50%, -50%);
-    background-color: white;
     border: 5px solid #555;
     border-radius: 50%;
     z-index: 20;
