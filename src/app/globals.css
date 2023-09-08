@@ -35,21 +35,26 @@
     font-family: 'Pretendard-Regular';
 }
 
-@layer components {
-    .container-box {
-        @apply container mx-auto px-4 md:px-0;
-    }
+.container-box {
+    @apply container mx-auto px-4 md:px-0;
+}
 
-    .absolute-center {
-        @apply absolute top-1/2 left-1/2;
-        transform: translate(-50%, -50%);
-    }
+.absolute-center {
+    @apply absolute top-1/2 left-1/2;
+    transform: translate(-50%, -50%);
+}
+
+.hide-scroll {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.hide-scroll::-webkit-scrollbar {
+    display: none;
 }
 
 body {
-    margin: 0;
-    width: 100vw;
-    height: 100vh;
+    @apply m-0 w-screen h-full md:h-screen overflow-x-hidden;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans',
         'Droid Sans', 'Helvetica Neue', sans-serif;
     -webkit-font-smoothing: antialiased;

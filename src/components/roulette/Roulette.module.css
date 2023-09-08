@@ -36,5 +36,9 @@
     transform: translate(-50%, -50%);
     border: 5px solid #555;
     border-radius: 50%;
-    z-index: 20;
+}
+
+.roulette-section-list {
+    @apply bg-white p-0 overflow-y-scroll;
+    height: 300px;
 }
