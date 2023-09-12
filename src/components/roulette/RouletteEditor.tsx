@@ -2,12 +2,13 @@
 
 import IUser from '@/interface/IUser';
 import { RootState } from '@/store/configureStore';
-import { IRouletteState, rouletteAddSection, rouletteEditReset, rouletteRemoveSection } from '@/store/rouletteSlice';
+import { IRouletteState, rouletteAddSection, rouletteEditReset } from '@/store/rouletteSlice';
 import { getUser } from '@/util/auth/authUtil';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './Roulette.module.css';
+import RouletteItem from './RouletteItem';
 
 export default function RouletteEditor() {
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'IDLE' | 'EDIT'>;
@@ -32,18 +33,7 @@ export default function RouletteEditor() {
                     <div className="text-center py-2">항목이 없습니다.</div>
                 )}
                 {(roulette as IRouletteState<'EDIT'>).section.length > 0 &&
-                    roulette.section?.map((el, i) => (
-                        <div key={i} className="text-center py-2">
-                            {el.content} |{' '}
-                            <button
-                                onClick={() => {
-                                    dispatch(rouletteRemoveSection(i));
-                                }}
-                            >
-                                삭제
-                            </button>
-                        </div>
-                    ))}
+                    roulette.section?.map((el, i) => <RouletteItem data={el} idx={i} key={i} />)}
             </div>
             <div className="text-white text-xl font-bold flex justify-around py-2">
                 <button

@@ -42,3 +42,8 @@
     @apply bg-white p-0 overflow-y-scroll;
     height: 300px;
 }
+
+.roulette-item-color {
+    width: 10px;
+    height: 10px;
+}

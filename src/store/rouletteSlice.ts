@@ -22,12 +22,14 @@ export interface IRouletteState<T extends RouletteMode> {
     mode: T;
     set: Set<T>;
     section: Section<T>;
+    editSectionIdx: number;
 }
 
 const initialState: IRouletteState<RouletteMode> = {
     mode: 'IDLE',
     set: undefined,
     section: undefined,
+    editSectionIdx: -1,
 };
 
 const rouletteSlice = createSlice({
@@ -38,6 +40,7 @@ const rouletteSlice = createSlice({
             state.mode = 'IDLE';
             state.set = undefined;
             state.section = undefined;
+            state.editSectionIdx = -1;
         },
         rouletteEditReset(state: IRouletteState<RouletteMode>) {
             state.mode = 'EDIT';
@@ -52,11 +55,13 @@ const rouletteSlice = createSlice({
                     weight: 10000,
                 },
             ];
+            state.editSectionIdx = -1;
         },
         roulettePlayReset(state: IRouletteState<RouletteMode>, action: PayloadAction<RoulettePlayResetPayload>) {
             state.mode = 'PLAY';
             state.set = action.payload.set;
             state.section = action.payload.section;
+            state.editSectionIdx = -1;
         },
         rouletteAddSection(state: IRouletteState<RouletteMode>) {
             if (state.mode !== 'EDIT') return state;
@@ -75,9 +80,45 @@ const rouletteSlice = createSlice({
             (state as IRouletteState<'EDIT'>).section?.splice(action.payload, 1);
             return state;
         },
+        rouletteEditSection(state: IRouletteState<RouletteMode>, action: PayloadAction<number>) {
+            if (state.mode !== 'EDIT') return state;
+            state.editSectionIdx = action.payload;
+        },
+        rouletteModifySection(
+            state: IRouletteState<RouletteMode>,
+            action: PayloadAction<
+                Partial<Pick<IRouletteSection, 'weight' | 'content'>> & Pick<IRouletteSection, 'idx'>
+            >,
+        ) {
+            if (state.mode !== 'EDIT') return state;
+            const { idx, weight, content } = action.payload;
+            if (weight !== undefined) {
+                if (weight <= 0) {
+                    alert('배율은 0 이상이여야 합니다!');
+                    return state;
+                }
+                (state as IRouletteState<'EDIT'>).section[idx].weight = weight;
+            }
+            if (content !== undefined) {
+                if (content === '') {
+                    alert('내용을 입력해주세요!');
+                    return state;
+                }
+                (state as IRouletteState<'EDIT'>).section[idx].content = content;
+            }
+            state.editSectionIdx = -1;
+            return state;
+        },
     },
 });
 
-export const { rouletteReset, rouletteEditReset, roulettePlayReset, rouletteAddSection, rouletteRemoveSection } =
-    rouletteSlice.actions;
+export const {
+    rouletteReset,
+    rouletteEditReset,
+    roulettePlayReset,
+    rouletteAddSection,
+    rouletteRemoveSection,
+    rouletteEditSection,
+    rouletteModifySection,
+} = rouletteSlice.actions;
 export default rouletteSlice.reducer;
