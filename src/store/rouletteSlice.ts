@@ -65,20 +65,22 @@ const rouletteSlice = createSlice({
         },
         rouletteAddSection(state: IRouletteState<RouletteMode>) {
             if (state.mode !== 'EDIT') return state;
-            (state as IRouletteState<'EDIT'>).section?.push({
+            const editState = state as IRouletteState<'EDIT'>;
+            editState.section.push({
                 content: `새 항목 ${state.section!.length + 1}`,
                 weight: 10000,
             });
-            return state;
+            return editState;
         },
         rouletteRemoveSection(state: IRouletteState<RouletteMode>, action: PayloadAction<number>) {
             if (state.mode !== 'EDIT') return state;
-            if (state.section && state.section.length < 3) {
+            const editState = state as IRouletteState<'EDIT'>;
+            if (editState.section.length < 3) {
                 alert('항목은 최소 2개 이상이여야 합니다.');
-                return state;
+                return editState;
             }
-            (state as IRouletteState<'EDIT'>).section?.splice(action.payload, 1);
-            return state;
+            editState.section.splice(action.payload, 1);
+            return editState;
         },
         rouletteEditSection(state: IRouletteState<RouletteMode>, action: PayloadAction<number>) {
             if (state.mode !== 'EDIT') return state;
@@ -91,23 +93,28 @@ const rouletteSlice = createSlice({
             >,
         ) {
             if (state.mode !== 'EDIT') return state;
+            const editState = state as IRouletteState<'EDIT'>;
             const { idx, weight, content } = action.payload;
             if (weight !== undefined) {
                 if (weight <= 0) {
                     alert('배율은 0 이상이여야 합니다!');
-                    return state;
+                    return editState;
                 }
-                (state as IRouletteState<'EDIT'>).section[idx].weight = weight;
+                editState.section[idx].weight = weight;
             }
             if (content !== undefined) {
                 if (content === '') {
                     alert('내용을 입력해주세요!');
                     return state;
                 }
-                (state as IRouletteState<'EDIT'>).section[idx].content = content;
+                if (content.length > 50) {
+                    alert('내용은 50자 이하여야 합니다.');
+                    return state;
+                }
+                editState.section[idx].content = content;
             }
-            state.editSectionIdx = -1;
-            return state;
+            editState.editSectionIdx = -1;
+            return editState;
         },
     },
 });
