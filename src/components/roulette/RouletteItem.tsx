@@ -27,15 +27,19 @@ export default function RouletteItem({ data, idx }: Props) {
     }, [isEdit]);
 
     return (
-        <div className={`flex flex-row justify-between items-center px-5 py-3 gap-5 ${isEdit ? 'bg-yellow-200' : ''}`}>
+        <div
+            className={`flex flex-row justify-between items-center px-2 xs:px-5 py-3 gap-2 xs:gap-5 ${
+                isEdit ? 'bg-yellow-200' : ''
+            }`}
+        >
             <div className={styles['roulette-item-color']} style={{ backgroundColor: sectionColor(idx) }}></div>
-            {!isEdit && <div className="flex-1 text-ellipsis">{data.content}</div>}
+            {!isEdit && <div className={styles['roulette-section-item-content']}>{data.content}</div>}
             {isEdit && (
                 <input
                     ref={contentRef}
                     type="text"
                     maxLength={20}
-                    className="flex-1 block"
+                    className={styles['roulette-section-item-content']}
                     defaultValue={data.content}
                 />
             )}

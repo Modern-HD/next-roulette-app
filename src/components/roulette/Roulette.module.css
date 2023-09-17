@@ -43,6 +43,10 @@
     height: 300px;
 }
 
+.roulette-section-item-content {
+    @apply flex-1 block overflow-hidden text-ellipsis whitespace-nowrap;
+}
+
 .roulette-item-color {
     width: 10px;
     height: 10px;

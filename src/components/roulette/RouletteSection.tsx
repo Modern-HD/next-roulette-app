@@ -28,7 +28,10 @@ export default function RouletteSection({ totalWeight, accWeight, data }: Roulet
                 style={{ transform: `rotate(${wDeg / 2 + 90 + aDeg}deg)` }}
             >
                 <div className={styles['roulette-content']}>
-                    <p className="text-md md:text-xl xl:text-3xl" style={{ transform: `rotate(180deg)` }}>
+                    <p
+                        className="text-md md:text-xl xl:text-3xl whitespace-nowrap overflow-hidden text-ellipsis"
+                        style={{ transform: `rotate(180deg)` }}
+                    >
                         {data.content}
                     </p>
                 </div>
