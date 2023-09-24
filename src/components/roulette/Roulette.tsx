@@ -35,6 +35,7 @@ export default function Roulette() {
                         />
                     ))}
             <div className={styles['roulette-center']}></div>
+            {!roulette.spinning && <div className={styles['roulette-tooltip']}>룰렛을 클릭하여 돌리기</div>}
         </div>
     );
 }

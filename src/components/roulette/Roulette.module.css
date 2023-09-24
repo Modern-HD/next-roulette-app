@@ -1,5 +1,5 @@
 .roulette-root {
-    @apply relative overflow-hidden;
+    @apply relative overflow-hidden cursor-pointer;
     border: 6px solid #555;
     border-radius: 50%;
     background-color: #ccc;
@@ -27,6 +27,10 @@
     @apply top-1/2 left-0 absolute w-1/2 text-end;
     padding-left: 3%;
     transform: translateY(-50%);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .roulette-center {
@@ -36,6 +40,15 @@
     transform: translate(-50%, -50%);
     border: 5px solid #555;
     border-radius: 50%;
+}
+
+.roulette-tooltip {
+    @apply absolute top-1/2 left-1/2 text-white shadow
+        text-sm lg:text-lg xl:text-2xl 2xl:text-3xl text-center
+        z-20 bg-gray-600 bg-opacity-75 p-4 rounded-full;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    animation: fadeOut 10s forwards;
 }
 
 .roulette-section-list {
@@ -50,4 +63,16 @@
 .roulette-item-color {
     width: 10px;
     height: 10px;
+}
+
+@keyframes fadeOut {
+    10% {
+        opacity: 100%;
+    }
+    75% {
+        opacity: 100%;
+    }
+    100% {
+        opacity: 0%;
+    }
 }
