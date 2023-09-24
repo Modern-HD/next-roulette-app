@@ -23,6 +23,9 @@ export interface IRouletteState<T extends RouletteMode> {
     set: Set<T>;
     section: Section<T>;
     editSectionIdx: number;
+    spinning: boolean;
+    resultSection: null | number;
+    deg: number;
 }
 
 const initialState: IRouletteState<RouletteMode> = {
@@ -30,44 +33,48 @@ const initialState: IRouletteState<RouletteMode> = {
     set: undefined,
     section: undefined,
     editSectionIdx: -1,
+    spinning: false,
+    resultSection: null,
+    deg: 0,
 };
 
 const rouletteSlice = createSlice({
     name: 'roulette',
     initialState,
     reducers: {
-        rouletteReset(state) {
-            state.mode = 'IDLE';
-            state.set = undefined;
-            state.section = undefined;
-            state.editSectionIdx = -1;
+        rouletteReset() {
+            return { ...initialState };
         },
-        rouletteEditReset(state: IRouletteState<RouletteMode>) {
-            state.mode = 'EDIT';
-            state.set = { title: '', description: '', public: false, category_idx: 0 };
-            state.section = [
-                {
-                    content: '새 항목 1',
-                    weight: 10000,
-                },
-                {
-                    content: '새 항목 2',
-                    weight: 10000,
-                },
-            ];
-            state.editSectionIdx = -1;
+        rouletteEditReset() {
+            return {
+                ...initialState,
+                mode: 'EDIT',
+                set: { title: '', description: '', public: false, category_idx: 0 },
+                section: [
+                    {
+                        content: '새 항목 1',
+                        weight: 10000,
+                    },
+                    {
+                        content: '새 항목 2',
+                        weight: 10000,
+                    },
+                ],
+            };
         },
         roulettePlayReset(state: IRouletteState<RouletteMode>, action: PayloadAction<RoulettePlayResetPayload>) {
-            state.mode = 'PLAY';
-            state.set = action.payload.set;
-            state.section = action.payload.section;
-            state.editSectionIdx = -1;
+            return {
+                ...initialState,
+                mode: 'PLAY',
+                set: action.payload.set,
+                section: action.payload.section,
+            };
         },
         rouletteAddSection(state: IRouletteState<RouletteMode>) {
             if (state.mode !== 'EDIT') return state;
             const editState = state as IRouletteState<'EDIT'>;
             editState.section.push({
-                content: `새 항목 ${state.section!.length + 1}`,
+                content: `새 항목 ${editState.section.length + 1}`,
                 weight: 10000,
             });
             return editState;
