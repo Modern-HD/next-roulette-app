@@ -3,9 +3,17 @@
     border: 6px solid #555;
     border-radius: 50%;
     background-color: #ccc;
-    box-shadow:
-        0 4px 8px 0 rgba(0, 0, 0, 0.2),
-        0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+.roulette-arrow {
+    @apply absolute left-1/2;
+    top: 2px;
+    transform: translateX(-50%);
+    width: 0px;
+    height: 0px;
+    border-top: 30px solid #555;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
 }
 
 .roulette-pad {
@@ -43,7 +51,7 @@
 }
 
 .roulette-tooltip {
-    @apply absolute top-1/2 left-1/2 text-white shadow
+    @apply absolute top-1/2 left-1/2 text-white shadow pointer-events-none
         text-sm lg:text-lg xl:text-2xl 2xl:text-3xl text-center
         z-20 bg-gray-600 bg-opacity-75 p-4 rounded-full;
     transform: translate(-50%, -50%);

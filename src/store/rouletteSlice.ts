@@ -26,6 +26,7 @@ export interface IRouletteState<T extends RouletteMode> {
     spinning: boolean;
     resultSection: null | number;
     deg: number;
+    speed: number;
 }
 
 const initialState: IRouletteState<RouletteMode> = {
@@ -36,6 +37,7 @@ const initialState: IRouletteState<RouletteMode> = {
     spinning: false,
     resultSection: null,
     deg: 0,
+    speed: 8,
 };
 
 const rouletteSlice = createSlice({
@@ -112,15 +114,39 @@ const rouletteSlice = createSlice({
             if (content !== undefined) {
                 if (content === '') {
                     alert('내용을 입력해주세요!');
-                    return state;
+                    return editState;
                 }
                 if (content.length > 50) {
                     alert('내용은 50자 이하여야 합니다.');
-                    return state;
+                    return editState;
                 }
                 editState.section[idx].content = content;
             }
             editState.editSectionIdx = -1;
+            return editState;
+        },
+        rouletteDemoPlay(state: IRouletteState<RouletteMode>) {
+            if (!(state.mode === 'EDIT')) return;
+            if (state.spinning) return;
+            const editState = state as IRouletteState<'EDIT'>;
+            const totalWeight = editState.section.reduce((acc, cur) => acc + cur.weight, 0);
+            const randomNum = Math.floor(Math.random() * totalWeight) + 1;
+            const resultSection = [...editState.section].reduce<number>((acc, cur, i, arr) => {
+                acc -= cur.weight;
+                if (acc > 0) return acc;
+                arr.splice(1);
+                return i;
+            }, randomNum);
+            editState.spinning = true;
+            editState.resultSection = resultSection;
+            editState.deg = 3600 - (randomNum / totalWeight) * 360;
+            return editState;
+        },
+        rouletteSpinReset(state: IRouletteState<RouletteMode>) {
+            if (!(state.mode === 'EDIT')) return;
+            const editState = state as IRouletteState<'EDIT'>;
+            editState.spinning = false;
+            editState.deg = editState.deg % 360;
             return editState;
         },
     },
@@ -134,5 +160,7 @@ export const {
     rouletteRemoveSection,
     rouletteEditSection,
     rouletteModifySection,
+    rouletteDemoPlay,
+    rouletteSpinReset,
 } = rouletteSlice.actions;
 export default rouletteSlice.reducer;
