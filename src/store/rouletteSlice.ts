@@ -102,6 +102,7 @@ const rouletteSlice = createSlice({
             >,
         ) {
             if (state.mode !== 'EDIT') return state;
+            if (state.spinning) return state;
             const editState = state as IRouletteState<'EDIT'>;
             const { idx, weight, content } = action.payload;
             if (weight !== undefined) {
@@ -137,6 +138,7 @@ const rouletteSlice = createSlice({
                 arr.splice(1);
                 return i;
             }, randomNum);
+            editState.editSectionIdx = -1;
             editState.spinning = true;
             editState.resultSection = resultSection;
             editState.deg = 3600 - (randomNum / totalWeight) * 360;
