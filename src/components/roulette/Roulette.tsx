@@ -4,7 +4,7 @@ import styles from './Roulette.module.css';
 import RouletteSection, { RouletteSectionProps } from './RouletteSection';
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/configureStore';
-import { IRouletteState, rouletteDemoPlay, rouletteSpinReset } from '@/store/rouletteSlice';
+import { IRouletteState, rouletteDemoPlay, rouletteResultDisplay, rouletteSpinReset } from '@/store/rouletteSlice';
 import { useEffect, useRef } from 'react';
 
 export default function Roulette() {
@@ -26,17 +26,17 @@ export default function Roulette() {
         }
         rouletteRef.current.style.transition = `${roulette.speed}s`;
         rouletteRef.current.style.transform = `rotate(${roulette.deg}deg)`;
-        setTimeout(
-            () => {
-                if (roulette.mode === 'IDLE') return;
-                if (!roulette.spinning) return;
-                const { section, resultSection } = roulette as IRouletteState<'EDIT' | 'PLAY'>;
-                if (resultSection === null) return;
-                alert(section[resultSection].content + ' 당첨!');
-                dispatch(rouletteSpinReset());
-            },
-            roulette.speed * 1000 + 1000,
-        );
+        !roulette.display &&
+            setTimeout(
+                () => {
+                    if (roulette.mode === 'IDLE') return;
+                    if (!roulette.spinning) return;
+                    const { resultSection } = roulette as IRouletteState<'EDIT' | 'PLAY'>;
+                    if (resultSection === null) return;
+                    dispatch(rouletteResultDisplay());
+                },
+                roulette.speed * 1000 + 1000,
+            );
     }, [roulette, dispatch]);
 
     return (

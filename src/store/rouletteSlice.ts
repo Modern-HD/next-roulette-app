@@ -27,6 +27,7 @@ export interface IRouletteState<T extends RouletteMode> {
     resultSection: null | number;
     deg: number;
     speed: number;
+    display: boolean;
 }
 
 const initialState: IRouletteState<RouletteMode> = {
@@ -38,6 +39,7 @@ const initialState: IRouletteState<RouletteMode> = {
     resultSection: null,
     deg: 0,
     speed: 8,
+    display: false,
 };
 
 const rouletteSlice = createSlice({
@@ -83,6 +85,7 @@ const rouletteSlice = createSlice({
         },
         rouletteRemoveSection(state: IRouletteState<RouletteMode>, action: PayloadAction<number>) {
             if (state.mode !== 'EDIT') return state;
+            if (state.spinning) return state;
             const editState = state as IRouletteState<'EDIT'>;
             if (editState.section.length < 3) {
                 alert('항목은 최소 2개 이상이여야 합니다.');
@@ -93,6 +96,7 @@ const rouletteSlice = createSlice({
         },
         rouletteEditSection(state: IRouletteState<RouletteMode>, action: PayloadAction<number>) {
             if (state.mode !== 'EDIT') return state;
+            if (state.spinning) return state;
             state.editSectionIdx = action.payload;
         },
         rouletteModifySection(
@@ -141,6 +145,7 @@ const rouletteSlice = createSlice({
             editState.editSectionIdx = -1;
             editState.spinning = true;
             editState.resultSection = resultSection;
+            editState.display = false;
             editState.deg = 3600 - (randomNum / totalWeight) * 360;
             return editState;
         },
@@ -149,7 +154,14 @@ const rouletteSlice = createSlice({
             const editState = state as IRouletteState<'EDIT'>;
             editState.spinning = false;
             editState.deg = editState.deg % 360;
-            return editState;
+            editState.display = false;
+        },
+        rouletteResultDisplay(state: IRouletteState<RouletteMode>) {
+            if (!state.spinning) return;
+            return {
+                ...state,
+                display: true,
+            };
         },
     },
 });
@@ -164,5 +176,6 @@ export const {
     rouletteModifySection,
     rouletteDemoPlay,
     rouletteSpinReset,
+    rouletteResultDisplay,
 } = rouletteSlice.actions;
 export default rouletteSlice.reducer;

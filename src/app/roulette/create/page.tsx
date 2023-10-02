@@ -3,6 +3,7 @@ import HomeBtn from '@/components/button/HomeBtn';
 import Nav from '@/components/nav/Nav';
 import Roulette from '@/components/roulette/Roulette';
 import RouletteEditor from '@/components/roulette/RouletteEditor';
+import RouletteResultDisplay from '@/components/roulette/RouletteResultDisplay';
 
 export default function Create() {
     return (
@@ -16,6 +17,7 @@ export default function Create() {
                     <RouletteEditor />
                 </div>
             </div>
+            <RouletteResultDisplay />
         </div>
     );
 }
