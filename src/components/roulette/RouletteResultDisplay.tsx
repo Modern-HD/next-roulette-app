@@ -15,16 +15,26 @@ export default function RouletteResultDisplay() {
     const result = section[roulette.resultSection];
 
     return (
-        <div className={styles['roulette-result-display']}>
-            <div className={styles['roulette-result-display-content']}>{result.content}</div>
-            <button
-                className="text-2xl"
-                onClick={() => {
-                    dispatch(rouletteSpinReset());
-                }}
-            >
-                확인
-            </button>
+        <div
+            id="roulette-result-modal-root"
+            className="fixed top-0 left-0 w-full h-full"
+            onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+                if (!(e.target instanceof HTMLDivElement)) return;
+                if (e.target.id !== 'roulette-result-modal-root') return;
+                dispatch(rouletteSpinReset());
+            }}
+        >
+            <div className={styles['roulette-result-display']}>
+                <div className={styles['roulette-result-display-content']}>{result.content}</div>
+                <button
+                    className="text-2xl"
+                    onClick={() => {
+                        dispatch(rouletteSpinReset());
+                    }}
+                >
+                    확인
+                </button>
+            </div>
         </div>
     );
 }
