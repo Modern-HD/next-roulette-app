@@ -4,15 +4,22 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/configureStore';
 import styles from './Roulette.module.css';
 import { IRouletteState, rouletteSpinReset } from '@/store/rouletteSlice';
+import { useRef } from 'react';
 
 export default function RouletteResultDisplay() {
     const roulette = useSelector((state: RootState) => state.roulette);
+    const displayRef = useRef<null | HTMLDivElement>(null);
     const dispatch = useDispatch();
-
     if (!(roulette.mode !== 'IDLE' && roulette.display && roulette.resultSection !== null)) return <></>;
 
     const section = (roulette as IRouletteState<'EDIT' | 'PLAY'>).section;
     const result = section[roulette.resultSection];
+
+    const onClose = () => {
+        displayRef.current?.classList.remove(styles['result-fade-in']);
+        displayRef.current?.classList.add(styles['result-fade-out']);
+        setTimeout(() => dispatch(rouletteSpinReset()), 300);
+    };
 
     return (
         <div
@@ -21,17 +28,15 @@ export default function RouletteResultDisplay() {
             onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                 if (!(e.target instanceof HTMLDivElement)) return;
                 if (e.target.id !== 'roulette-result-modal-root') return;
-                dispatch(rouletteSpinReset());
+                onClose();
             }}
         >
-            <div className={styles['roulette-result-display']}>
+            <div
+                ref={displayRef}
+                className={['roulette-result-display', 'result-fade-in'].map(cn => styles[cn]).join(' ')}
+            >
                 <div className={styles['roulette-result-display-content']}>{result.content}</div>
-                <button
-                    className="text-2xl"
-                    onClick={() => {
-                        dispatch(rouletteSpinReset());
-                    }}
-                >
+                <button className="text-2xl" onClick={onClose}>
                     확인
                 </button>
             </div>

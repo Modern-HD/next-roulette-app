@@ -77,13 +77,20 @@
     @apply absolute top-1/2 left-1/2 rounded-xl p-5 bg-orange-300 text-center shadow-sm
         w-10/12 sm:w-9/12 lg:w-8/12 2xl:w-7/12;
     transform: translate(-50%, -50%);
-    animation: resultFadeIn 0.3s;
 }
 
 .roulette-result-display-content {
     @apply bg-white px-4 py-2 rounded-lg mb-2 font-bold text-3xl 
         text-ellipsis overflow-hidden whitespace-nowrap;
     min-width: 50%;
+}
+
+.result-fade-in {
+    animation: resultFadeIn 0.3s;
+}
+
+.result-fade-out {
+    animation: resultFadeOut 0.3s forwards;
 }
 
 @keyframes fadeOut {
@@ -106,5 +113,19 @@
     100% {
         top: 50%;
         opacity: 100%;
+    }
+}
+
+@keyframes resultFadeOut {
+    0% {
+        top: 50%;
+        opacity: 100%;
+    }
+    33% {
+        top: 53%;
+    }
+    100% {
+        top: 45%;
+        opacity: 0%;
     }
 }
