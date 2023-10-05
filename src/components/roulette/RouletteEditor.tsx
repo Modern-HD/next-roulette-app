@@ -45,6 +45,7 @@ export default function RouletteEditor() {
                 </button>
                 <button
                     onClick={() => {
+                        if (roulette.spinning) return;
                         confirm('초기화 진행 시 현재 작업물을 잃게됩니다.\n정말로 초기화 하겠습니까?') &&
                             dispatch(rouletteEditReset());
                     }}

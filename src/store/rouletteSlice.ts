@@ -76,6 +76,7 @@ const rouletteSlice = createSlice({
         },
         rouletteAddSection(state: IRouletteState<RouletteMode>) {
             if (state.mode !== 'EDIT') return state;
+            if (state.spinning) return state;
             const editState = state as IRouletteState<'EDIT'>;
             editState.section.push({
                 content: `새 항목 ${editState.section.length + 1}`,
