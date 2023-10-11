@@ -2,10 +2,12 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 interface ModalState {
     sideBar: boolean;
+    rouletteSave: boolean;
 }
 
 const initialState: ModalState = {
     sideBar: false,
+    rouletteSave: false,
 };
 
 const modalSlice = createSlice({

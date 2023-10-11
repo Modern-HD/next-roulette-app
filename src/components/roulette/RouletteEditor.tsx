@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './Roulette.module.css';
 import RouletteItem from './RouletteItem';
+import { modalOpen } from '@/store/modalSlice';
 
 export default function RouletteEditor() {
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'IDLE' | 'EDIT'>;
@@ -52,7 +53,14 @@ export default function RouletteEditor() {
                 >
                     초기화
                 </button>
-                <button className={`${user ? '' : 'text-gray-400'}`}>저장 하기</button>
+                <button
+                    onClick={() => {
+                        dispatch(modalOpen('rouletteSave'));
+                    }}
+                    className={`${user ? '' : 'text-gray-400'}`}
+                >
+                    저장 하기
+                </button>
             </div>
         </div>
     );

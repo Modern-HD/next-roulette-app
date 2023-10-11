@@ -4,6 +4,7 @@ import Nav from '@/components/nav/Nav';
 import Roulette from '@/components/roulette/Roulette';
 import RouletteEditor from '@/components/roulette/RouletteEditor';
 import RouletteResultDisplay from '@/components/roulette/RouletteResultDisplay';
+import RouletteSaveModal from '@/components/roulette/RouletteSaveModal';
 
 export default function Create() {
     return (
@@ -20,6 +21,7 @@ export default function Create() {
                 </div>
             </div>
             <RouletteResultDisplay />
+            <RouletteSaveModal />
         </>
     );
 }
