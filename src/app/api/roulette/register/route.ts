@@ -43,7 +43,7 @@ export async function POST(req: Request) {
         );
     } catch (error) {
         console.error(error);
-        return NextResponse.json({ code: '03', msg: '등록 중 오류가 발생하였습니다.', result: 'success' });
+        return NextResponse.json({ code: '03', msg: '등록 중 오류가 발생하였습니다.', result: 'fail' });
     }
 
     return NextResponse.json({ code: '00', msg: '등록 성공', result: 'success' });
