@@ -87,8 +87,8 @@
 
 .roulette-save-modal {
     @apply absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-        w-10/12 sm:w-9/12 lg:w-7/12 2xl:w-6/12
-        rounded-2xl overflow-hidden flex flex-col;
+        w-10/12 sm:w-9/12 lg:w-5/12 2xl:w-4/12 bg-white
+        rounded-lg shadow-lg overflow-hidden flex flex-col;
 }
 
 .result-fade-in {

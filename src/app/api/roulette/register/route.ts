@@ -8,7 +8,7 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-interface IRouletteResister {
+export interface IRouletteResister {
     set: Pick<IRouletteSet, 'title' | 'description' | 'category_idx' | 'public'>;
     section: Pick<IRouletteSection, 'content' | 'location' | 'weight'>[];
 }

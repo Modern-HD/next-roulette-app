@@ -59,7 +59,7 @@ export default function RouletteEditor() {
                     }}
                     className={`${user ? '' : 'text-gray-400'}`}
                 >
-                    저장 하기
+                    게시하기
                 </button>
             </div>
         </div>
