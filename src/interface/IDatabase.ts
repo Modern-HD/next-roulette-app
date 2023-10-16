@@ -27,27 +27,33 @@ export interface Database {
             play_data: {
                 Row: {
                     created_at: string;
+                    en: string;
                     idx: number;
-                    result_section: number;
+                    ko: string;
+                    roulette_set_idx: number;
                     user_idx: number;
                 };
                 Insert: {
                     created_at?: string;
+                    en: string;
                     idx?: number;
-                    result_section: number;
+                    ko: string;
+                    roulette_set_idx: number;
                     user_idx: number;
                 };
                 Update: {
                     created_at?: string;
+                    en?: string;
                     idx?: number;
-                    result_section?: number;
+                    ko?: string;
+                    roulette_set_idx?: number;
                     user_idx?: number;
                 };
                 Relationships: [
                     {
-                        foreignKeyName: 'play_data_result_section_roulette_section_idx_fk';
-                        columns: ['result_section'];
-                        referencedRelation: 'roulette_section';
+                        foreignKeyName: 'play_data_roulette_set_idx_roulette_set_idx_fk';
+                        columns: ['roulette_set_idx'];
+                        referencedRelation: 'roulette_set';
                         referencedColumns: ['idx'];
                     },
                     {
