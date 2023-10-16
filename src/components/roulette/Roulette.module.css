@@ -91,6 +91,11 @@
         rounded-lg shadow-lg overflow-hidden flex flex-col;
 }
 
+.roulette-public-btn {
+    @apply px-3 py-2;
+    width: 75px;
+}
+
 .result-fade-in {
     animation: resultFadeIn 0.3s;
 }

@@ -13,7 +13,7 @@ type Section<T> = T extends 'EDIT'
 type Set<T> = T extends 'EDIT'
     ? Omit<IRouletteSet, 'idx' | 'created_at' | 'updated_at' | 'user_idx' | 'play_count'>
     : T extends 'PLAY'
-    ? IRouletteSet[]
+    ? IRouletteSet
     : undefined;
 
 type RoulettePlayResetPayload = Pick<IRouletteState<'PLAY'>, 'set' | 'section'>;
@@ -95,6 +95,12 @@ const rouletteSlice = createSlice({
             editState.section.splice(action.payload, 1);
             return editState;
         },
+        rouletteEditSet(state: IRouletteState<RouletteMode>, action: PayloadAction<Partial<Set<'EDIT'>>>) {
+            if (state.mode !== 'EDIT') return state;
+            if (!state.set) return state;
+            state.set = { ...state.set, ...action.payload };
+            return state;
+        },
         rouletteEditSection(state: IRouletteState<RouletteMode>, action: PayloadAction<number>) {
             if (state.mode !== 'EDIT') return state;
             if (state.spinning) return state;
@@ -173,6 +179,7 @@ export const {
     roulettePlayReset,
     rouletteAddSection,
     rouletteRemoveSection,
+    rouletteEditSet,
     rouletteEditSection,
     rouletteModifySection,
     rouletteDemoPlay,

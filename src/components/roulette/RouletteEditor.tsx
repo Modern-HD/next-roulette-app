@@ -10,12 +10,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import styles from './Roulette.module.css';
 import RouletteItem from './RouletteItem';
 import { modalOpen } from '@/store/modalSlice';
+import { useRouter } from 'next/navigation';
 
 export default function RouletteEditor() {
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'IDLE' | 'EDIT'>;
     const [user, setUser] = useState<null | Pick<IUser, 'idx' | 'nick_name'>>();
     const dispatch = useDispatch();
     const supabase = createClientComponentClient();
+    const router = useRouter();
 
     useEffect(() => {
         dispatch(rouletteEditReset());
@@ -55,7 +57,11 @@ export default function RouletteEditor() {
                 </button>
                 <button
                     onClick={() => {
-                        dispatch(modalOpen('rouletteSave'));
+                        if (user) return dispatch(modalOpen('rouletteSave'));
+                        if (user === undefined) return;
+                        if (!confirm('로그인 이후 사용할 수 있는 기능입니다.\n로그인 하시겠습니까?')) return;
+                        if (!confirm('페이지 이동 시 현재 작업물을 잃게됩니다.\n정말로 이동 하겠습니까?')) return;
+                        router.push('/login');
                     }}
                     className={`${user ? '' : 'text-gray-400'}`}
                 >

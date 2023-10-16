@@ -11,6 +11,7 @@ export default function StateResetProvider({ children }: { children: React.React
     const dispatch = useDispatch();
     useEffect(() => {
         dispatch(modalClose('sideBar'));
+        dispatch(modalClose('rouletteSave'));
         pathname.startsWith('/roulette/') || dispatch(rouletteReset());
     }, [pathname, dispatch]);
     return <>{children}</>;

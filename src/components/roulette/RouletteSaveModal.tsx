@@ -8,14 +8,13 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
 import { Database } from '@/interface/IDatabase';
 import ICategory from '@/interface/ICategory';
-import { IRouletteState } from '@/store/rouletteSlice';
+import { IRouletteState, rouletteEditSet } from '@/store/rouletteSlice';
 
 export default function RouletteSaveModal() {
     const modal = useSelector((state: RootState) => state.modal);
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'EDIT'>;
     const supabase = createClientComponentClient<Database>();
     const dispatch = useDispatch();
-
     const [categoryList, setCategoryList] = useState<Pick<ICategory, 'idx' | 'ko' | 'en'>[]>([]);
 
     useEffect(() => {
@@ -39,21 +38,81 @@ export default function RouletteSaveModal() {
         >
             <div className={styles['roulette-save-modal']}>
                 <div className="text-center py-3 text-2xl font-bold text-white bg-orange-400">게시하기</div>
-                <form className="bg-white flex-1 flex flex-col p-3 md:p-10">
-                    <div className=" text-gray-600">룰렛 이름</div>
-                    <input className="border border-orange-400 p-1 rounded-lg mb-2" />
-                    <div>
-                        <p className=" text-gray-600">카테고리</p>
-                        <select defaultValue={0} className="border border-orange-400 p-1 rounded-lg mb-2">
-                            <option defaultValue={0} disabled={roulette.set.category_idx !== 0}>
+                <form
+                    className="bg-white flex flex-col overflow-y-scroll hide-scroll p-3 md:p-10"
+                    style={{ maxHeight: (innerHeight * 2) / 3 }}
+                >
+                    <div className="mb-2">
+                        <p className="text-gray-600">룰렛 이름</p>
+                        <input
+                            className="border border-orange-400 p-1 rounded-lg w-full"
+                            maxLength={20}
+                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                                dispatch(rouletteEditSet({ title: e.target.value }));
+                            }}
+                        />
+                    </div>
+
+                    <div className="mb-2">
+                        <p className="text-gray-600">룰렛 설명</p>
+                        <textarea
+                            className="border border-orange-400 p-1 rounded-lg w-full"
+                            style={{ minHeight: 58 }}
+                            onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
+                                dispatch(rouletteEditSet({ description: e.target.value }));
+                            }}
+                        ></textarea>
+                    </div>
+
+                    <div className="mb-2">
+                        <p className="text-gray-600">카테고리</p>
+                        <select
+                            className="border border-orange-400 py-1 rounded-lg pe-5"
+                            onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                dispatch(rouletteEditSet({ category_idx: parseInt(e.target.value) }));
+                            }}
+                        >
+                            <option value={0} disabled={roulette.set.category_idx !== 0}>
                                 선택해주세요.
                             </option>
                             {categoryList.map(el => (
-                                <option key={el.idx} defaultValue={el.idx}>
+                                <option key={el.idx} value={el.idx}>
                                     {el.ko}
                                 </option>
                             ))}
                         </select>
+                    </div>
+
+                    <div className="mb-2">
+                        <p className="text-gray-600">공개 여부</p>
+                        <div className="flex flex-row">
+                            <div className="border border-orange-400 flex flex-row rounded-lg overflow-hidden">
+                                <button
+                                    type="button"
+                                    className={[
+                                        styles['roulette-public-btn'],
+                                        roulette.set.public ? 'bg-orange-400 text-white font-bold' : 'text-orange-400',
+                                    ].join(' ')}
+                                    onClick={() => {
+                                        dispatch(rouletteEditSet({ public: true }));
+                                    }}
+                                >
+                                    공개
+                                </button>
+                                <button
+                                    type="button"
+                                    className={[
+                                        styles['roulette-public-btn'],
+                                        !roulette.set.public ? 'bg-orange-400 text-white font-bold' : 'text-orange-400',
+                                    ].join(' ')}
+                                    onClick={() => {
+                                        dispatch(rouletteEditSet({ public: false }));
+                                    }}
+                                >
+                                    비공개
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </form>
                 <div className="flex flex-row gap-2 justify-center py-3">
