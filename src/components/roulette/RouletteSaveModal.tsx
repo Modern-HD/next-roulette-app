@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 import { Database } from '@/interface/IDatabase';
 import ICategory from '@/interface/ICategory';
 import { IRouletteState, rouletteEditSet } from '@/store/rouletteSlice';
+import IResponse from '@/interface/IResponse';
 
 export default function RouletteSaveModal() {
     const modal = useSelector((state: RootState) => state.modal);
@@ -26,6 +27,21 @@ export default function RouletteSaveModal() {
     }, [supabase]);
 
     if (!(modal.rouletteSave && roulette.mode === 'EDIT')) return <></>;
+
+    const onSubmit = async () => {
+        const { title, description, category_idx, public: isPublic } = roulette.set;
+        const res = (await fetch('/api/roulette/register', {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json;charset=utf-8',
+            },
+            body: JSON.stringify({
+                set: { title, description, category_idx, public: isPublic },
+                section: roulette.section.map(({ weight, content }, location) => ({ weight, content, location })),
+            }),
+        }).then(result => result.json())) as IResponse;
+    };
+
     return (
         <div
             id="roulette-save-modal"
@@ -116,7 +132,10 @@ export default function RouletteSaveModal() {
                     </div>
                 </form>
                 <div className="flex flex-row gap-2 justify-center py-3">
-                    <button className="text-center px-4 py-1 rounded-lg shadow text-xl cursor-pointer text-white bg-orange-400">
+                    <button
+                        className="text-center px-4 py-1 rounded-lg shadow text-xl cursor-pointer text-white bg-orange-400"
+                        onClick={onSubmit}
+                    >
                         게시
                     </button>
                     <button
