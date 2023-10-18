@@ -5,18 +5,26 @@ import { modalClose } from '@/store/modalSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import styles from './Roulette.module.css';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Database } from '@/interface/IDatabase';
 import ICategory from '@/interface/ICategory';
 import { IRouletteState, rouletteEditSet } from '@/store/rouletteSlice';
 import IResponse from '@/interface/IResponse';
+import { fetchConfig } from '@/util/fetchUtil';
+import { useRouter } from 'next/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
 
 export default function RouletteSaveModal() {
     const modal = useSelector((state: RootState) => state.modal);
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'EDIT'>;
     const supabase = createClientComponentClient<Database>();
     const dispatch = useDispatch();
+    const router = useRouter();
+
     const [categoryList, setCategoryList] = useState<Pick<ICategory, 'idx' | 'ko' | 'en'>[]>([]);
+    const [isBlock, setBlock] = useState<boolean>(false);
+    const formRef = useRef<null | HTMLFormElement>(null);
 
     useEffect(() => {
         const getData = async () => {
@@ -28,18 +36,53 @@ export default function RouletteSaveModal() {
 
     if (!(modal.rouletteSave && roulette.mode === 'EDIT')) return <></>;
 
-    const onSubmit = async () => {
+    const submit = async () => {
+        if (formRef.current === null) return;
+        const inputs = formRef.current.elements;
         const { title, description, category_idx, public: isPublic } = roulette.set;
-        const res = (await fetch('/api/roulette/register', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json;charset=utf-8',
-            },
-            body: JSON.stringify({
+        if (!(title && title.length > 0 && title.length <= 20)) {
+            alert('룰렛 이름은 1자 이상, 20자 이하 여야 합니다.');
+            const titleInput = inputs.namedItem('title');
+            return titleInput instanceof HTMLInputElement && titleInput.focus();
+        }
+        if (!(typeof description === 'string' || description <= 500)) {
+            alert('룰렛 설명은 500자 이하여야 합니다.');
+            const descriptionInput = inputs.namedItem('description');
+            return descriptionInput instanceof HTMLTextAreaElement && descriptionInput.focus();
+        }
+        if (!(category_idx > 0 && categoryList.map(({ idx }) => idx).includes(category_idx))) {
+            alert('카테고리를 선택해주세요.');
+            const categoryInput = inputs.namedItem('category');
+            return categoryInput instanceof HTMLSelectElement && categoryInput.focus();
+        }
+        setBlock(true);
+        const res = await fetch(
+            '/api/roulette/register',
+            fetchConfig('POST', {
                 set: { title, description, category_idx, public: isPublic },
                 section: roulette.section.map(({ weight, content }, location) => ({ weight, content, location })),
             }),
-        }).then(result => result.json())) as IResponse;
+        );
+        if (res.status !== 200) return alert('오류가 발생하였습니다.');
+        const data = (await res.json().catch(() => alert('오류가 발생하였습니다.'))) as
+            | IResponse<undefined | { setIdx: number }>
+            | undefined;
+        if (!data) return;
+        if (data.result === 'success' && data.code === '00' && data.data?.setIdx) {
+            alert(data.msg);
+            return router.replace(`/roulette/play/${data.data.setIdx}`);
+        }
+        return alert(data.msg);
+    };
+
+    const onSubmitBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+        if (!(e.target instanceof HTMLButtonElement)) return;
+        e.target.disabled === true;
+        submit().then(() => {
+            if (!(e.target instanceof HTMLButtonElement)) return;
+            e.target.disabled === false;
+            setBlock(false);
+        });
     };
 
     return (
@@ -49,12 +92,14 @@ export default function RouletteSaveModal() {
             onClick={(e: React.MouseEvent<HTMLDivElement>) => {
                 if (!(e.target instanceof HTMLDivElement)) return;
                 if (e.target.id !== 'roulette-save-modal') return;
+                if (isBlock) return;
                 dispatch(modalClose('rouletteSave'));
             }}
         >
             <div className={styles['roulette-save-modal']}>
                 <div className="text-center py-3 text-2xl font-bold text-white bg-orange-400">게시하기</div>
                 <form
+                    ref={formRef}
                     className="bg-white flex flex-col overflow-y-scroll hide-scroll p-3 md:p-10"
                     style={{ maxHeight: (innerHeight * 2) / 3 }}
                 >
@@ -63,6 +108,8 @@ export default function RouletteSaveModal() {
                         <input
                             className="border border-orange-400 p-1 rounded-lg w-full"
                             maxLength={20}
+                            defaultValue={roulette.set.title}
+                            name="title"
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                 dispatch(rouletteEditSet({ title: e.target.value }));
                             }}
@@ -74,6 +121,8 @@ export default function RouletteSaveModal() {
                         <textarea
                             className="border border-orange-400 p-1 rounded-lg w-full"
                             style={{ minHeight: 58 }}
+                            name="description"
+                            defaultValue={roulette.set.description}
                             onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
                                 dispatch(rouletteEditSet({ description: e.target.value }));
                             }}
@@ -84,6 +133,7 @@ export default function RouletteSaveModal() {
                         <p className="text-gray-600">카테고리</p>
                         <select
                             className="border border-orange-400 py-1 rounded-lg pe-5"
+                            name="category"
                             onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
                                 dispatch(rouletteEditSet({ category_idx: parseInt(e.target.value) }));
                             }}
@@ -131,22 +181,37 @@ export default function RouletteSaveModal() {
                         </div>
                     </div>
                 </form>
-                <div className="flex flex-row gap-2 justify-center py-3">
+                <div className="flex flex-row gap-2 justify-center pb-5">
                     <button
                         className="text-center px-4 py-1 rounded-lg shadow text-xl cursor-pointer text-white bg-orange-400"
-                        onClick={onSubmit}
+                        type="button"
+                        onClick={onSubmitBtnClick}
                     >
                         게시
                     </button>
                     <button
                         className="text-center px-4 py-1 rounded-lg shadow text-xl cursor-pointer text-orange-500 border-orange-400 border-2"
+                        type="button"
                         onClick={() => {
+                            if (isBlock) return;
                             dispatch(modalClose('rouletteSave'));
                         }}
                     >
                         취소
                     </button>
                 </div>
+                {isBlock && (
+                    <div className="absolute top-0 left-0 w-full h-full bg-white bg-opacity-50">
+                        <div className="absolute-center text-center text-gray-500">
+                            <FontAwesomeIcon
+                                icon={faCircleNotch}
+                                className="animate-spin"
+                                style={{ width: 50, height: 50 }}
+                            />
+                            <h2 className="text-2xl font-bold">게시 중</h2>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );

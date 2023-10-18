@@ -47,7 +47,7 @@ export default function Roulette() {
                 onClick={() => {
                     if (roulette.section && roulette.section.length < 2) return;
                     if (roulette.spinning) return;
-                    dispatch(rouletteDemoPlay());
+                    roulette.mode === 'EDIT' && dispatch(rouletteDemoPlay());
                 }}
             >
                 <div className={styles['roulette-pad']}></div>
