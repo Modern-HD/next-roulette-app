@@ -11,7 +11,7 @@ interface Props {
 
 export default function Nav({ leftBtn, title, rightBtn, className }: Props) {
     return (
-        <nav className={'container-box text-white text-bold text-2xl pt-4 px-0 ' + (className ? className : '')}>
+        <nav className={'text-white text-bold text-2xl pt-4 px-0 ' + (className ? className : '')}>
             <div className="flex justify-between">
                 <div className={styles['nav-icon']}>{leftBtn}</div>
                 <div>{title}</div>

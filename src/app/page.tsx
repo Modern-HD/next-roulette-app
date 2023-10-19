@@ -18,7 +18,7 @@ export default function Home() {
             <SideBar />
             <div className="h-full flex flex-col pb-5">
                 <Nav leftBtn={<SideBarOpenBtn />} title={'오늘의 룰렛'} rightBtn={<SearchBtn />} />
-                <div className="flex-1 flex flex-col justify-center text-white text-2xl">
+                <div className="flex-1 flex flex-col justify-center text-white text-2xl py-10">
                     {!userData && (
                         <div>
                             <p className="mb-2">로그인 하면 더 많은 기능을 이용하실 수 있습니다.</p>
