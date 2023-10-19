@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { RsItem } from './RouletteSetCardList';
+import styles from './Card.module.css';
 
 interface Props {
     data: RsItem;
@@ -22,22 +22,22 @@ export default function RouletteSetCardItem({
 
     return (
         <div
-            className="bg-slate-100 rounded-2xl shadow-sm relative overflow-hidden select-none"
+            className={styles['roulette-set-card-item']}
             onMouseOver={() => {
                 setMouseOver(true);
             }}
             onMouseOut={() => {
                 setMouseOver(false);
             }}
-            style={{ width: 300, height: 400, minWidth: 300, minHeight: 400 }}
+            style={{ width: 300, height: 250, minWidth: 300, minHeight: 250 }}
         >
             <div className="h-full flex flex-col py-5 px-5">
                 <div>
                     <h5 className="text-lg font-bold">{title}</h5>
                 </div>
-                <div className="flex-1 flex justify-center items-center">
-                    <Image src={'/roulette_preview.png'} alt={''} width={200} height={200} />
-                </div>
+                {/* <div className="flex-1 flex justify-center items-center">
+                    <Image src={'/roulette_preview.png'} alt={''} width={100} height={100} />
+                </div> */}
                 <div>{description}</div>
             </div>
 

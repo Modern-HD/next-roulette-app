@@ -23,5 +23,9 @@ export default function RouletteSetCardList() {
         };
         getData();
     }, [supabase]);
-    return <div>{rsList && rsList.map((el, i) => <RouletteSetCardItem data={el} key={i} />)}</div>;
+    return (
+        <div className="flex w-full flex-wrap overflow-y-scroll justify-around md:justify-between hide-scroll gap-4 md:h-4/6 lg:h-3/4 xl:h-5/6">
+            {rsList && rsList.map((el, i) => <RouletteSetCardItem data={el} key={i} />)}
+        </div>
+    );
 }
