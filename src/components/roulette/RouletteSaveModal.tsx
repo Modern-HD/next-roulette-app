@@ -43,17 +43,20 @@ export default function RouletteSaveModal() {
         if (!(title && title.length > 0 && title.length <= 20)) {
             alert('룰렛 이름은 1자 이상, 20자 이하 여야 합니다.');
             const titleInput = inputs.namedItem('title');
-            return titleInput instanceof HTMLInputElement && titleInput.focus();
+            titleInput instanceof HTMLInputElement && titleInput.focus();
+            return;
         }
         if (!(typeof description === 'string' || description <= 500)) {
             alert('룰렛 설명은 500자 이하여야 합니다.');
             const descriptionInput = inputs.namedItem('description');
-            return descriptionInput instanceof HTMLTextAreaElement && descriptionInput.focus();
+            descriptionInput instanceof HTMLTextAreaElement && descriptionInput.focus();
+            return;
         }
         if (!(category_idx > 0 && categoryList.map(({ idx }) => idx).includes(category_idx))) {
             alert('카테고리를 선택해주세요.');
             const categoryInput = inputs.namedItem('category');
-            return categoryInput instanceof HTMLSelectElement && categoryInput.focus();
+            categoryInput instanceof HTMLSelectElement && categoryInput.focus();
+            return;
         }
         setBlock(true);
         const res = await fetch(
@@ -70,7 +73,8 @@ export default function RouletteSaveModal() {
         if (!data) return;
         if (data.result === 'success' && data.code === '00' && data.data?.setIdx) {
             alert(data.msg);
-            return router.replace(`/roulette/play/${data.data.setIdx}`);
+            router.replace(`/roulette/play/${data.data.setIdx}`);
+            return true;
         }
         return alert(data.msg);
     };
@@ -78,7 +82,8 @@ export default function RouletteSaveModal() {
     const onSubmitBtnClick = (e: React.MouseEvent<HTMLButtonElement>) => {
         if (!(e.target instanceof HTMLButtonElement)) return;
         e.target.disabled === true;
-        submit().then(() => {
+        submit().then(result => {
+            if (result) return;
             if (!(e.target instanceof HTMLButtonElement)) return;
             e.target.disabled === false;
             setBlock(false);
