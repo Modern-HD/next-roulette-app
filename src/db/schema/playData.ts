@@ -10,8 +10,7 @@ const playData = pgTable('play_data', {
     roulette_set_idx: integer('roulette_set_idx')
         .notNull()
         .references(() => rouletteSet.idx),
-    ko: varchar('ko', { length: 50 }).notNull(),
-    en: varchar('en', { length: 50 }).notNull(),
+    content: varchar('content', { length: 50 }).notNull(),
     created_at: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
 });
 

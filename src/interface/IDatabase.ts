@@ -26,26 +26,23 @@ export interface Database {
             };
             play_data: {
                 Row: {
+                    content: string;
                     created_at: string;
-                    en: string;
                     idx: number;
-                    ko: string;
                     roulette_set_idx: number;
                     user_idx: number;
                 };
                 Insert: {
+                    content: string;
                     created_at?: string;
-                    en: string;
                     idx?: number;
-                    ko: string;
                     roulette_set_idx: number;
                     user_idx: number;
                 };
                 Update: {
+                    content?: string;
                     created_at?: string;
-                    en?: string;
                     idx?: number;
-                    ko?: string;
                     roulette_set_idx?: number;
                     user_idx?: number;
                 };
