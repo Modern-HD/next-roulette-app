@@ -1,4 +1,4 @@
-export function fetchConfig(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', body: any) {
+export function fetchConfig<T>(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE', body: T) {
     return {
         method,
         headers: {
