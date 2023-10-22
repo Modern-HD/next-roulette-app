@@ -1,3 +1,5 @@
+import { IRoulettePlayResponse } from '@/app/api/roulette/play/route';
+import IPlayData from '@/interface/IPlayData';
 import IRouletteSection from '@/interface/IRouletteSection';
 import IRouletteSet from '@/interface/IRouletteSet';
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
@@ -16,12 +18,15 @@ type Set<T> = T extends 'EDIT'
     ? IRouletteSet
     : undefined;
 
-type RoulettePlayResetPayload = Pick<IRouletteState<'PLAY'>, 'set' | 'section'>;
+type PlayData<T> = T extends 'PLAY' ? IPlayData[] : undefined;
+
+type RoulettePlayResetPayload = Pick<IRouletteState<'PLAY'>, 'set' | 'section' | 'playData'>;
 
 export interface IRouletteState<T extends RouletteMode> {
     mode: T;
     set: Set<T>;
     section: Section<T>;
+    playData: PlayData<T>;
     editSectionIdx: number;
     spinning: boolean;
     resultSection: null | number;
@@ -34,6 +39,7 @@ const initialState: IRouletteState<RouletteMode> = {
     mode: 'IDLE',
     set: undefined,
     section: undefined,
+    playData: undefined,
     editSectionIdx: -1,
     spinning: false,
     resultSection: null,
@@ -72,6 +78,7 @@ const rouletteSlice = createSlice({
                 mode: 'PLAY',
                 set: action.payload.set,
                 section: action.payload.section,
+                playData: action.payload.playData,
             };
         },
         rouletteAddSection(state: IRouletteState<RouletteMode>) {
@@ -156,9 +163,27 @@ const rouletteSlice = createSlice({
             editState.deg = 3600 - (randomNum / totalWeight) * 360;
             return editState;
         },
+        roulettePlayPretreatment(state: IRouletteState<RouletteMode>) {
+            if (state.mode !== 'PLAY') return;
+            if (state.spinning) return;
+            const playState = state as IRouletteState<'PLAY'>;
+            playState.spinning = true;
+            playState.display = false;
+            playState.deg = state.deg + 1800;
+            return playState;
+        },
+        roulettePlay(state: IRouletteState<RouletteMode>, action: PayloadAction<IRoulettePlayResponse>) {
+            if (state.mode !== 'PLAY') return;
+            const playState = state as IRouletteState<'PLAY'>;
+            playState.spinning = true;
+            playState.resultSection = action.payload.resultSection;
+            playState.display = false;
+            playState.deg = action.payload.deg;
+            return playState;
+        },
         rouletteSpinReset(state: IRouletteState<RouletteMode>) {
-            if (!(state.mode === 'EDIT')) return;
-            const editState = state as IRouletteState<'EDIT'>;
+            if (state.mode === 'IDLE') return;
+            const editState = state as IRouletteState<'EDIT' | 'PLAY'>;
             editState.spinning = false;
             editState.deg = editState.deg % 360;
             editState.display = false;
@@ -169,6 +194,11 @@ const rouletteSlice = createSlice({
                 ...state,
                 display: true,
             };
+        },
+        rouletteHistoryUpdate(state: IRouletteState<RouletteMode>, action: PayloadAction<IPlayData[]>) {
+            if (state.mode !== 'PLAY') return;
+            const playState = state as IRouletteState<'PLAY'>;
+            playState.playData = action.payload;
         },
     },
 });
@@ -183,7 +213,10 @@ export const {
     rouletteEditSection,
     rouletteModifySection,
     rouletteDemoPlay,
+    roulettePlayPretreatment,
+    roulettePlay,
     rouletteSpinReset,
     rouletteResultDisplay,
+    rouletteHistoryUpdate,
 } = rouletteSlice.actions;
 export default rouletteSlice.reducer;

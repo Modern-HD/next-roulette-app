@@ -4,6 +4,7 @@ import BackBtn from '@/components/button/BackBtn';
 import HomeBtn from '@/components/button/HomeBtn';
 import Nav from '@/components/nav/Nav';
 import Roulette from '@/components/roulette/Roulette';
+import RouletteHistory from '@/components/roulette/RouletteHistory';
 import RouletteResultDisplay from '@/components/roulette/RouletteResultDisplay';
 import { Database } from '@/interface/IDatabase';
 import { RootState } from '@/store/configureStore';
@@ -27,8 +28,14 @@ export default function Play({ params }: { params: Params }) {
                 .select()
                 .eq('roulette_set_idx', idx)
                 .order('location');
+            const { data: playData } = await supabase
+                .from('play_data')
+                .select()
+                .eq('roulette_set_idx', idx)
+                .order('idx', { ascending: false })
+                .limit(30);
             if (!(set && section)) return;
-            dispatch(roulettePlayReset({ set, section }));
+            dispatch(roulettePlayReset({ set, section, playData: playData || [] }));
         };
         getData();
     }, [dispatch, supabase, idx]);
@@ -46,7 +53,9 @@ export default function Play({ params }: { params: Params }) {
                     <div className="w-full md:w-1/2 overflow-hidden">
                         <Roulette />
                     </div>
-                    <div className="h-full w-full md:flex-1 flex justify-center items-center"></div>
+                    <div className="h-full w-full md:flex-1 flex justify-center items-center">
+                        <RouletteHistory />
+                    </div>
                 </div>
             </div>
             <RouletteResultDisplay />

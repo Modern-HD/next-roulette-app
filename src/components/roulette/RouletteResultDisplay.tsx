@@ -3,12 +3,14 @@
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/configureStore';
 import styles from './Roulette.module.css';
-import { IRouletteState, rouletteSpinReset } from '@/store/rouletteSlice';
+import { IRouletteState, rouletteHistoryUpdate, rouletteSpinReset } from '@/store/rouletteSlice';
 import { useRef } from 'react';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 
 export default function RouletteResultDisplay() {
     const roulette = useSelector((state: RootState) => state.roulette);
     const displayRef = useRef<null | HTMLDivElement>(null);
+    const supabase = createClientComponentClient();
     const dispatch = useDispatch();
     if (!(roulette.mode !== 'IDLE' && roulette.display && roulette.resultSection !== null)) return <></>;
 
@@ -18,6 +20,18 @@ export default function RouletteResultDisplay() {
     const onClose = () => {
         displayRef.current?.classList.remove(styles['result-fade-in']);
         displayRef.current?.classList.add(styles['result-fade-out']);
+        if (roulette.mode === 'PLAY') {
+            supabase
+                .from('play_data')
+                .select()
+                .eq('roulette_set_idx', (roulette as IRouletteState<'PLAY'>).set.idx)
+                .order('idx', { ascending: false })
+                .limit(30)
+                .then(result => {
+                    const { data } = result;
+                    dispatch(rouletteHistoryUpdate(data || []));
+                });
+        }
         setTimeout(() => dispatch(rouletteSpinReset()), 300);
     };
 
