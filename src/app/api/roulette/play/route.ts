@@ -5,7 +5,7 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
-export interface IRoulettePlay {
+export interface IRoulettePlayRequest {
     idx: number;
     rouletteSetUpdated: string;
 }
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
     const supabase = createRouteHandlerClient<Database>({ cookies });
     const user = await getUser(supabase);
 
-    const body: IRoulettePlay = await req.json();
+    const body: IRoulettePlayRequest = await req.json();
     const { data: rouletteSet } = await supabase.from('roulette_set').select().eq('idx', body.idx).single();
     if (!rouletteSet) {
         return NextResponse.json<IResponse>({
@@ -28,7 +28,6 @@ export async function POST(req: Request) {
             result: 'fail',
         });
     }
-    console.log(rouletteSet.updated_at);
     if (rouletteSet.updated_at !== body.rouletteSetUpdated) {
         return NextResponse.json<IResponse>({
             code: '02',
