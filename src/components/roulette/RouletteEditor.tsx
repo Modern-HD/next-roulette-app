@@ -22,7 +22,7 @@ export default function RouletteEditor() {
     useEffect(() => {
         dispatch(rouletteEditReset());
         getUser(supabase).then(result => {
-            result && setUser(result);
+            setUser(result);
         });
     }, [dispatch, supabase]);
 
