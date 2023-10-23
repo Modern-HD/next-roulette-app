@@ -9,15 +9,21 @@ import {
     rouletteDemoPlay,
     roulettePlay,
     roulettePlayPretreatment,
+    roulettePlayReset,
     rouletteResultDisplay,
 } from '@/store/rouletteSlice';
 import { useEffect, useRef } from 'react';
-import { fetchConfig } from '@/util/fetchUtil';
+import { fetchConfig, fetchingPlayableRouletteData } from '@/util/fetchUtil';
 import { IRoulettePlayRequest, IRoulettePlayResponse } from '@/app/api/roulette/play/route';
 import IResponse from '@/interface/IResponse';
+import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Database } from '@/interface/IDatabase';
+import { useRouter } from 'next/navigation';
 
 export default function Roulette() {
     const roulette = useSelector((state: RootState) => state.roulette);
+    const supabase = createClientComponentClient<Database>();
+    const router = useRouter();
     const dispatch = useDispatch();
     const rouletteRef = useRef<null | HTMLDivElement>(null);
 
@@ -48,34 +54,41 @@ export default function Roulette() {
             );
     }, [roulette, dispatch]);
 
+    const onPlay = async () => {
+        if (roulette.section && roulette.section.length < 2) return;
+        if (roulette.spinning) return;
+        if (roulette.mode === 'EDIT') dispatch(rouletteDemoPlay());
+        if (roulette.mode === 'PLAY') {
+            dispatch(roulettePlayPretreatment());
+            const res = await fetch(
+                '/api/roulette/play',
+                fetchConfig<IRoulettePlayRequest>('POST', {
+                    idx: (roulette as IRouletteState<'PLAY'>).set.idx,
+                    rouletteSetUpdated: (roulette as IRouletteState<'PLAY'>).set.updated_at,
+                }),
+            );
+            const body: IResponse<IRoulettePlayResponse | undefined> = await res.json();
+            if (body.code !== '00') {
+                alert(body.msg);
+                if (body.code === '02') {
+                    return fetchingPlayableRouletteData((roulette as IRouletteState<'PLAY'>).set.idx, supabase).then(
+                        result => {
+                            if (!result) return router.replace('/');
+                            dispatch(roulettePlayReset(result));
+                        },
+                    );
+                }
+                return router.replace('/');
+            }
+            if (body.code === '00' && body.data) {
+                dispatch(roulettePlay(body.data));
+            }
+        }
+    };
+
     return (
         <div className="relative">
-            <div
-                className={styles['roulette-root']}
-                ref={rouletteRef}
-                onClick={async () => {
-                    if (roulette.section && roulette.section.length < 2) return;
-                    if (roulette.spinning) return;
-                    if (roulette.mode === 'EDIT') dispatch(rouletteDemoPlay());
-                    if (roulette.mode === 'PLAY') {
-                        dispatch(roulettePlayPretreatment());
-                        const res = await fetch(
-                            '/api/roulette/play',
-                            fetchConfig<IRoulettePlayRequest>('POST', {
-                                idx: (roulette as IRouletteState<'PLAY'>).set.idx,
-                                rouletteSetUpdated: (roulette as IRouletteState<'PLAY'>).set.updated_at,
-                            }),
-                        );
-                        const body: IResponse<IRoulettePlayResponse | undefined> = await res.json();
-                        if (body.code !== '00') {
-                            return alert(body.msg);
-                        }
-                        if (body.code === '00' && body.data) {
-                            dispatch(roulettePlay(body.data));
-                        }
-                    }
-                }}
-            >
+            <div className={styles['roulette-root']} ref={rouletteRef} onClick={onPlay}>
                 <div className={styles['roulette-pad']}></div>
                 {roulette.mode !== 'IDLE' &&
                     (roulette as IRouletteState<'EDIT'>).section

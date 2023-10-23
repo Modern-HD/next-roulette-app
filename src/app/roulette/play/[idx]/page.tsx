@@ -9,8 +9,10 @@ import RouletteResultDisplay from '@/components/roulette/RouletteResultDisplay';
 import { Database } from '@/interface/IDatabase';
 import { RootState } from '@/store/configureStore';
 import { roulettePlayReset } from '@/store/rouletteSlice';
+import { fetchingPlayableRouletteData } from '@/util/fetchUtil';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
+import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -18,27 +20,18 @@ export default function Play({ params }: { params: Params }) {
     const dispatch = useDispatch();
     const supabase = createClientComponentClient<Database>();
     const roulette = useSelector(({ roulette }: RootState) => roulette);
+    const router = useRouter();
     const { idx } = params;
 
     useEffect(() => {
-        const getData = async () => {
-            const { data: set } = await supabase.from('roulette_set').select().eq('idx', idx).single();
-            const { data: section } = await supabase
-                .from('roulette_section')
-                .select()
-                .eq('roulette_set_idx', idx)
-                .order('location');
-            const { data: playData } = await supabase
-                .from('play_data')
-                .select()
-                .eq('roulette_set_idx', idx)
-                .order('idx', { ascending: false })
-                .limit(30);
-            if (!(set && section)) return;
-            dispatch(roulettePlayReset({ set, section, playData: playData || [] }));
-        };
-        getData();
-    }, [dispatch, supabase, idx]);
+        fetchingPlayableRouletteData(idx, supabase).then(result => {
+            if (!result) {
+                alert('룰렛이 존재하지 않습니다.');
+                return router.replace('/');
+            }
+            dispatch(roulettePlayReset(result));
+        });
+    }, [dispatch, supabase, idx, router]);
 
     return (
         <>

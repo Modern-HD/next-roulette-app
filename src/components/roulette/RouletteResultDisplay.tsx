@@ -6,6 +6,7 @@ import styles from './Roulette.module.css';
 import { IRouletteState, rouletteHistoryUpdate, rouletteSpinReset } from '@/store/rouletteSlice';
 import { useRef } from 'react';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { fetchRoulettePlayHistoryData } from '@/util/fetchUtil';
 
 export default function RouletteResultDisplay() {
     const roulette = useSelector((state: RootState) => state.roulette);
@@ -21,16 +22,9 @@ export default function RouletteResultDisplay() {
         displayRef.current?.classList.remove(styles['result-fade-in']);
         displayRef.current?.classList.add(styles['result-fade-out']);
         if (roulette.mode === 'PLAY') {
-            supabase
-                .from('play_data')
-                .select()
-                .eq('roulette_set_idx', (roulette as IRouletteState<'PLAY'>).set.idx)
-                .order('idx', { ascending: false })
-                .limit(30)
-                .then(result => {
-                    const { data } = result;
-                    dispatch(rouletteHistoryUpdate(data || []));
-                });
+            fetchRoulettePlayHistoryData((roulette as IRouletteState<'PLAY'>).set.idx, supabase).then(result => {
+                dispatch(rouletteHistoryUpdate(result));
+            });
         }
         setTimeout(() => dispatch(rouletteSpinReset()), 300);
     };
