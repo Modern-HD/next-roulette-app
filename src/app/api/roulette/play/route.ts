@@ -39,7 +39,7 @@ export async function POST(req: Request) {
         .from('roulette_section')
         .select()
         .eq('roulette_set_idx', rouletteSet.idx);
-    if (!(rouletteSection && rouletteSection.length > 2)) {
+    if (!(rouletteSection && rouletteSection.length >= 2)) {
         return NextResponse.json<IResponse>({
             code: '03',
             msg: '잘못된 룰렛입니다.',
