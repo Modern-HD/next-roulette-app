@@ -9,7 +9,7 @@ import RouletteResultDisplay from '@/components/roulette/RouletteResultDisplay';
 import { Database } from '@/interface/IDatabase';
 import { RootState } from '@/store/configureStore';
 import { roulettePlayReset } from '@/store/rouletteSlice';
-import { fetchingPlayableRouletteData } from '@/util/fetchUtil';
+import { fetchPlayableRouletteData } from '@/util/fetchUtil';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
 import { useRouter } from 'next/navigation';
@@ -24,7 +24,7 @@ export default function Play({ params }: { params: Params }) {
     const { idx } = params;
 
     useEffect(() => {
-        fetchingPlayableRouletteData(idx, supabase).then(result => {
+        fetchPlayableRouletteData(idx, supabase).then(result => {
             if (!result) {
                 alert('룰렛이 존재하지 않습니다.');
                 return router.replace('/');

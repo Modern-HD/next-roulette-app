@@ -11,7 +11,7 @@ export function fetchConfig<T>(method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELET
     };
 }
 
-export async function fetchingPlayableRouletteData(rouletteSetIdx: number, supabase: SupabaseClient<Database>) {
+export async function fetchPlayableRouletteData(rouletteSetIdx: number, supabase: SupabaseClient<Database>) {
     const { data: set } = await supabase.from('roulette_set').select().eq('idx', rouletteSetIdx).single();
     const { data: section } = await supabase
         .from('roulette_section')
