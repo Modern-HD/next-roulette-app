@@ -8,6 +8,7 @@ import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { getUser } from '@/util/auth/authUtil';
 import { IRouletteState } from '@/store/rouletteSlice';
 import Link from 'next/link';
+import RouletteHistoryItem from './RouletteHistoryItem';
 
 export default function RouletteHistory() {
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'PLAY'>;
@@ -41,7 +42,7 @@ export default function RouletteHistory() {
                 )}
                 {user &&
                     roulette.playData.length > 0 &&
-                    roulette.playData.map((el, i) => <div key={i}>{el.content}</div>)}
+                    roulette.playData.map((el, i) => <RouletteHistoryItem key={i} data={el} />)}
             </div>
             <div className="text-white text-xl font-bold flex justify-around py-2">
                 <button>룰렛 정보</button>
