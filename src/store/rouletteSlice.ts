@@ -29,6 +29,7 @@ export interface IRouletteState<T extends RouletteMode> {
     playData: PlayData<T>;
     editSectionIdx: number;
     spinning: boolean;
+    isFetching: boolean;
     resultSection: null | number;
     deg: number;
     speed: number;
@@ -42,6 +43,7 @@ const initialState: IRouletteState<RouletteMode> = {
     playData: undefined,
     editSectionIdx: -1,
     spinning: false,
+    isFetching: false,
     resultSection: null,
     deg: 0,
     speed: 8,
@@ -169,7 +171,8 @@ const rouletteSlice = createSlice({
             const playState = state as IRouletteState<'PLAY'>;
             playState.spinning = true;
             playState.display = false;
-            playState.deg = state.deg + 1800;
+            playState.deg = state.deg + 3600;
+            playState.isFetching = true;
             return playState;
         },
         roulettePlay(state: IRouletteState<RouletteMode>, action: PayloadAction<IRoulettePlayResponse>) {
@@ -179,6 +182,7 @@ const rouletteSlice = createSlice({
             playState.resultSection = action.payload.resultSection;
             playState.display = false;
             playState.deg = action.payload.deg;
+            playState.isFetching = false;
             return playState;
         },
         rouletteSpinReset(state: IRouletteState<RouletteMode>) {
@@ -187,6 +191,7 @@ const rouletteSlice = createSlice({
             editState.spinning = false;
             editState.deg = editState.deg % 360;
             editState.display = false;
+            editState.isFetching = false;
         },
         rouletteResultDisplay(state: IRouletteState<RouletteMode>) {
             if (!state.spinning) return;

@@ -13,7 +13,7 @@ import {
     rouletteResultDisplay,
 } from '@/store/rouletteSlice';
 import { useEffect, useRef } from 'react';
-import { fetchConfig, fetchingPlayableRouletteData } from '@/util/fetchUtil';
+import { fetchConfig, fetchPlayableRouletteData } from '@/util/fetchUtil';
 import { IRoulettePlayRequest, IRoulettePlayResponse } from '@/app/api/roulette/play/route';
 import IResponse from '@/interface/IResponse';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
@@ -35,13 +35,14 @@ export default function Roulette() {
     useEffect(() => {
         if (!rouletteRef.current) return;
         if (!roulette.spinning) {
+            rouletteRef.current.style.transitionTimingFunction = 'ease';
             rouletteRef.current.style.transition = 'none';
             rouletteRef.current.style.transform = `rotate(${roulette.deg}deg)`;
             return;
         }
-        rouletteRef.current.style.transition = `${roulette.speed}s`;
+        rouletteRef.current.style.transition = `${roulette.speed}s ease-out`;
         rouletteRef.current.style.transform = `rotate(${roulette.deg}deg)`;
-        !roulette.display &&
+        if (!roulette.display && (roulette.mode !== 'PLAY' || !roulette.isFetching)) {
             setTimeout(
                 () => {
                     if (roulette.mode === 'IDLE') return;
@@ -52,6 +53,7 @@ export default function Roulette() {
                 },
                 roulette.speed * 1000 + 1000,
             );
+        }
     }, [roulette, dispatch]);
 
     const onPlay = async () => {
@@ -71,7 +73,7 @@ export default function Roulette() {
             if (body.code !== '00') {
                 alert(body.msg);
                 if (body.code === '02') {
-                    return fetchingPlayableRouletteData((roulette as IRouletteState<'PLAY'>).set.idx, supabase).then(
+                    return fetchPlayableRouletteData((roulette as IRouletteState<'PLAY'>).set.idx, supabase).then(
                         result => {
                             if (!result) return router.replace('/');
                             dispatch(roulettePlayReset(result));
