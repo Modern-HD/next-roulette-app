@@ -1,3 +1,5 @@
+'use client';
+
 import BackBtn from '@/components/button/BackBtn';
 import HomeBtn from '@/components/button/HomeBtn';
 import Nav from '@/components/nav/Nav';
@@ -5,8 +7,17 @@ import Roulette from '@/components/roulette/Roulette';
 import RouletteEditor from '@/components/roulette/RouletteEditor';
 import RouletteResultDisplay from '@/components/roulette/RouletteResultDisplay';
 import RouletteSaveModal from '@/components/roulette/RouletteSaveModal';
+import { rouletteEditReset } from '@/store/rouletteSlice';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 
 export default function Create() {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(rouletteEditReset());
+    }, [dispatch]);
+
     return (
         <>
             <div className="flex flex-col h-full">
