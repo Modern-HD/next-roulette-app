@@ -2,7 +2,7 @@
 
 import IUser from '@/interface/IUser';
 import { RootState } from '@/store/configureStore';
-import { IRouletteState, rouletteAddSection, rouletteEditReset } from '@/store/rouletteSlice';
+import { IRouletteState, rouletteAddSection, rouletteEditReset, rouletteModifyReset } from '@/store/rouletteSlice';
 import { getUser } from '@/util/auth/authUtil';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
@@ -11,6 +11,7 @@ import styles from './Roulette.module.css';
 import RouletteItem from './RouletteItem';
 import { modalOpen } from '@/store/modalSlice';
 import { useRouter } from 'next/navigation';
+import { fetchModifiableRouletteData } from '@/util/fetchUtil';
 
 export default function RouletteEditor() {
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'IDLE' | 'EDIT'>;
@@ -20,11 +21,10 @@ export default function RouletteEditor() {
     const router = useRouter();
 
     useEffect(() => {
-        dispatch(rouletteEditReset());
         getUser(supabase).then(result => {
             setUser(result);
         });
-    }, [dispatch, supabase]);
+    }, [supabase]);
 
     if (roulette.mode === 'IDLE') return <></>;
 
@@ -49,8 +49,17 @@ export default function RouletteEditor() {
                 <button
                     onClick={() => {
                         if (roulette.spinning) return;
-                        confirm('초기화 진행 시 현재 작업물을 잃게됩니다.\n정말로 초기화 하겠습니까?') &&
+                        if (!confirm('초기화 진행 시 현재 작업물을 잃게됩니다.\n정말로 초기화 하겠습니까?')) return;
+                        if (roulette.set?.idx) {
+                            fetchModifiableRouletteData(roulette.set.idx, supabase).then(result => {
+                                if (!result) {
+                                    return alert('통신 중 오류가 발생하였습니다.');
+                                }
+                                dispatch(rouletteModifyReset(result));
+                            });
+                        } else {
                             dispatch(rouletteEditReset());
+                        }
                     }}
                 >
                     초기화
@@ -65,7 +74,7 @@ export default function RouletteEditor() {
                     }}
                     className={`${user ? '' : 'text-gray-400'}`}
                 >
-                    게시하기
+                    {roulette.set?.idx ? '수정하기' : '게시하기'}
                 </button>
             </div>
         </div>

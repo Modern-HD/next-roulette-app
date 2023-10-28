@@ -48,6 +48,7 @@ export async function PUT(req: Request) {
                         description,
                         category_idx,
                         public: isPublic,
+                        updated_at: new Date(),
                     })
                     .where(eq(rouletteSet.idx, idx)),
                 tx.delete(rouletteSection).where(eq(rouletteSection.roulette_set_idx, idx)),

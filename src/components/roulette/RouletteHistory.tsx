@@ -9,11 +9,13 @@ import { getUser } from '@/util/auth/authUtil';
 import { IRouletteState } from '@/store/rouletteSlice';
 import Link from 'next/link';
 import RouletteHistoryItem from './RouletteHistoryItem';
+import { useRouter } from 'next/navigation';
 
 export default function RouletteHistory() {
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'PLAY'>;
     const [user, setUser] = useState<null | { idx: number; nick_name: string }>();
     const supabase = createClientComponentClient();
+    const router = useRouter();
 
     useEffect(() => {
         getUser(supabase).then(result => setUser(result));
@@ -46,7 +48,13 @@ export default function RouletteHistory() {
             </div>
             <div className="text-white text-xl font-bold flex justify-around py-2">
                 <button>룰렛 정보</button>
-                <button className={`${user && user.idx === roulette.set.user_idx ? '' : 'text-gray-400'}`}>
+                <button
+                    className={`${user && user.idx === roulette.set.user_idx ? '' : 'text-gray-400'}`}
+                    onClick={() => {
+                        if (!(user && user.idx === roulette.set.user_idx)) return;
+                        router.push(`/roulette/modify/${roulette.set.idx}`);
+                    }}
+                >
                     수정하기
                 </button>
             </div>

@@ -10,7 +10,7 @@ import { Database } from '@/interface/IDatabase';
 import ICategory from '@/interface/ICategory';
 import { IRouletteState, rouletteEditSet } from '@/store/rouletteSlice';
 import IResponse from '@/interface/IResponse';
-import { fetchConfig } from '@/util/fetchUtil';
+import { sendRouletteDataToSave } from '@/util/fetchUtil';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
@@ -39,7 +39,7 @@ export default function RouletteSaveModal() {
     const submit = async () => {
         if (formRef.current === null) return;
         const inputs = formRef.current.elements;
-        const { title, description, category_idx, public: isPublic } = roulette.set;
+        const { idx, title, description, category_idx, public: isPublic } = roulette.set;
         if (!(title && title.length > 0 && title.length <= 20)) {
             alert('룰렛 이름은 1자 이상, 20자 이하 여야 합니다.');
             const titleInput = inputs.namedItem('title');
@@ -59,13 +59,10 @@ export default function RouletteSaveModal() {
             return;
         }
         setBlock(true);
-        const res = await fetch(
-            '/api/roulette/register',
-            fetchConfig('POST', {
-                set: { title, description, category_idx, public: isPublic },
-                section: roulette.section.map(({ weight, content }, location) => ({ weight, content, location })),
-            }),
-        );
+        const res = await sendRouletteDataToSave({
+            set: { idx, title, description, category_idx, public: isPublic },
+            section: roulette.section,
+        });
         if (res.status !== 200) return alert('오류가 발생하였습니다.');
         const data = (await res.json().catch(() => alert('오류가 발생하였습니다.'))) as
             | IResponse<undefined | { setIdx: number }>
@@ -102,7 +99,9 @@ export default function RouletteSaveModal() {
             }}
         >
             <div className={styles['roulette-save-modal']}>
-                <div className="text-center py-3 text-2xl font-bold text-white bg-orange-400">게시하기</div>
+                <div className="text-center py-3 text-2xl font-bold text-white bg-orange-400">
+                    {roulette.set.idx ? '수정' : '게시'}하기
+                </div>
                 <form
                     ref={formRef}
                     className="bg-white flex flex-col overflow-y-scroll hide-scroll p-3 md:p-10"
@@ -192,7 +191,7 @@ export default function RouletteSaveModal() {
                         type="button"
                         onClick={onSubmitBtnClick}
                     >
-                        게시
+                        {roulette.set.idx ? '수정' : '게시'}
                     </button>
                     <button
                         className="text-center px-4 py-1 rounded-lg shadow text-xl cursor-pointer text-orange-500 border-orange-400 border-2"
@@ -213,7 +212,7 @@ export default function RouletteSaveModal() {
                                 className="animate-spin"
                                 style={{ width: 50, height: 50 }}
                             />
-                            <h2 className="text-2xl font-bold">게시 중</h2>
+                            <h2 className="text-2xl font-bold">{roulette.set.idx ? '수정 중' : '게시 중'}</h2>
                         </div>
                     </div>
                 )}
