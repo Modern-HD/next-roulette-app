@@ -7,7 +7,7 @@ import IRouletteSet from '@/interface/IRouletteSet';
 import { getUser } from '@/util/auth/authUtil';
 import { rouletteCommonValidation } from '@/util/routerUtil';
 import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
-import { eq } from 'drizzle-orm';
+import { and, eq, lt } from 'drizzle-orm';
 import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 
@@ -39,6 +39,7 @@ export async function PUT(req: Request) {
     const { idx, title, description, category_idx, public: isPublic } = body.set;
     await drizzleClient.transaction(
         async tx => {
+            const now = new Date();
             await Promise.all([
                 tx
                     .update(rouletteSet)
@@ -48,10 +49,12 @@ export async function PUT(req: Request) {
                         description,
                         category_idx,
                         public: isPublic,
-                        updated_at: new Date(),
+                        updated_at: now,
                     })
                     .where(eq(rouletteSet.idx, idx)),
-                tx.delete(rouletteSection).where(eq(rouletteSection.roulette_set_idx, idx)),
+                tx
+                    .delete(rouletteSection)
+                    .where(and(eq(rouletteSection.roulette_set_idx, idx), lt(rouletteSection.created_at, now))),
                 tx.insert(rouletteSection).values(body.section.map(el => ({ roulette_set_idx: idx, ...el }))),
             ]);
         },
