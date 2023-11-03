@@ -9,7 +9,7 @@ export default function RouletteHistoryItem({ data: { content, created_at } }: {
     let timeStr = '';
 
     if (difference >= 1000 * 60 * 60 * 24 * 7) {
-        timeStr = `${createdAt.getFullYear()}-${lPad(createdAt.getMonth())}-${lPad(createdAt.getDay())}`;
+        timeStr = `${createdAt.getFullYear()}-${lPad(createdAt.getMonth() + 1)}-${lPad(createdAt.getDate())}`;
     } else if (difference >= 1000 * 60 * 60 * 24) {
         timeStr = `${Math.floor(difference / (1000 * 60 * 60 * 24))}일 전`;
     } else if (difference >= 1000 * 60 * 60) {
