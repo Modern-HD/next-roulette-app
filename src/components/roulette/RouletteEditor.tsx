@@ -74,7 +74,7 @@ export default function RouletteEditor() {
                     }}
                     className={`${user ? '' : 'text-gray-400'}`}
                 >
-                    {roulette.set?.idx ? '수정하기' : '게시하기'}
+                    {roulette.set?.idx ? '수정/삭제' : '게시하기'}
                 </button>
             </div>
         </div>

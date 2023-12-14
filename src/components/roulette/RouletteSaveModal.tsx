@@ -14,6 +14,7 @@ import { sendRouletteDataToSave } from '@/util/fetchUtil';
 import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from '@fortawesome/free-solid-svg-icons';
+import RouletteRemoveModal from './RouletteRemoveModal';
 
 export default function RouletteSaveModal() {
     const modal = useSelector((state: RootState) => state.modal);
@@ -24,6 +25,7 @@ export default function RouletteSaveModal() {
 
     const [categoryList, setCategoryList] = useState<Pick<ICategory, 'idx' | 'ko' | 'en'>[]>([]);
     const [isBlock, setBlock] = useState<boolean>(false);
+    const [removeModalOpen, setRemoveModalOpen] = useState<boolean>(false);
     const formRef = useRef<null | HTMLFormElement>(null);
 
     useEffect(() => {
@@ -193,6 +195,16 @@ export default function RouletteSaveModal() {
                     >
                         {roulette.set.idx ? '수정' : '게시'}
                     </button>
+                    {roulette.set.idx && (
+                        <button
+                            className="text-center px-4 py-1 rounded-lg shadow text-xl cursor-pointer text-white bg-red-400"
+                            onClick={() => {
+                                setRemoveModalOpen(true);
+                            }}
+                        >
+                            삭제
+                        </button>
+                    )}
                     <button
                         className="text-center px-4 py-1 rounded-lg shadow text-xl cursor-pointer text-orange-500 border-orange-400 border-2"
                         type="button"
@@ -215,6 +227,14 @@ export default function RouletteSaveModal() {
                             <h2 className="text-2xl font-bold">{roulette.set.idx ? '수정 중' : '게시 중'}</h2>
                         </div>
                     </div>
+                )}
+                {removeModalOpen && <div className="absolute w-full h-full top-0 left-0 bg-white bg-opacity-50"></div>}
+                {removeModalOpen && (
+                    <RouletteRemoveModal
+                        onClose={() => {
+                            setRemoveModalOpen(false);
+                        }}
+                    />
                 )}
             </div>
         </div>
