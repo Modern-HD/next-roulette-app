@@ -35,9 +35,6 @@ export default function RouletteSetCardItem({
                 <div>
                     <h5 className="text-lg font-bold">{title}</h5>
                 </div>
-                {/* <div className="flex-1 flex justify-center items-center">
-                    <Image src={'/roulette_preview.png'} alt={''} width={100} height={100} />
-                </div> */}
                 <div>{description}</div>
             </div>
 

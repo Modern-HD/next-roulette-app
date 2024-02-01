@@ -10,10 +10,12 @@ import { IRouletteState } from '@/store/rouletteSlice';
 import Link from 'next/link';
 import RouletteHistoryItem from './RouletteHistoryItem';
 import { useRouter } from 'next/navigation';
+import RouletteInfo from './RouletteInfo';
 
 export default function RouletteHistory() {
     const roulette = useSelector((state: RootState) => state.roulette) as IRouletteState<'PLAY'>;
     const [user, setUser] = useState<null | { idx: number; nick_name: string }>();
+    const [isInfo, setIsInfo] = useState<boolean>(false);
     const supabase = createClientComponentClient();
     const router = useRouter();
 
@@ -24,7 +26,7 @@ export default function RouletteHistory() {
     if (roulette.mode !== 'PLAY') return <></>;
 
     return (
-        <div className="bg-default w-10/12 lg:w-8/12 rounded-lg overflow-hidden flex-col shadow-lg my-5">
+        <div className="bg-default w-10/12 lg:w-8/12 rounded-lg overflow-hidden flex-col shadow-lg my-5 relative">
             <div className=" text-white text-center text-2xl font-bold py-2">플레이 기록</div>
             <div className={`hide-scroll ${styles['roulette-section-list']}`}>
                 {user === null && (
@@ -47,7 +49,13 @@ export default function RouletteHistory() {
                     roulette.playData.map((el, i) => <RouletteHistoryItem key={i} data={el} />)}
             </div>
             <div className="text-white text-xl font-bold flex justify-around py-2">
-                <button>룰렛 정보</button>
+                <button
+                    onClick={() => {
+                        setIsInfo(true);
+                    }}
+                >
+                    룰렛 정보
+                </button>
                 <button
                     className={`${user && user.idx === roulette.set.user_idx ? '' : 'text-gray-400'}`}
                     onClick={() => {
@@ -58,6 +66,12 @@ export default function RouletteHistory() {
                     수정하기
                 </button>
             </div>
+            <RouletteInfo
+                isInfo={isInfo}
+                closeInfo={() => {
+                    setIsInfo(false);
+                }}
+            />
         </div>
     );
 }
