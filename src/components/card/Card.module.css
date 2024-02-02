@@ -3,6 +3,33 @@
     animation: fadeIn 1s;
 }
 
+.roulette-root {
+    @apply relative overflow-hidden cursor-pointer;
+    border: 2px solid #555;
+    border-radius: 50%;
+    background-color: #ccc;
+}
+
+.roulette-pad {
+    @apply w-full h-0;
+    padding-bottom: 100%;
+}
+
+.roulette-section {
+    @apply w-full h-full absolute top-0;
+}
+
+.roulette-border {
+    @apply w-1/2 absolute top-1/2 left-0;
+    border: 1px solid #555;
+    transform: translateY(-50%);
+}
+
+.roulette-item-color {
+    width: 10px;
+    height: 10px;
+}
+
 @keyframes fadeIn {
     0% {
         opacity: 0%;

@@ -6,9 +6,11 @@ import IUser from '@/interface/IUser';
 import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
 import { useEffect, useState } from 'react';
 import RouletteSetCardItem from './RouletteSetCardItem';
+import IRouletteSection from '@/interface/IRouletteSection';
 
 export type RsItem = Pick<IRouletteSet, 'idx' | 'title' | 'description' | 'play_count'> & {
     user: Pick<IUser, 'nick_name'>;
+    roulette_section: Pick<IRouletteSection, 'content' | 'weight' | 'location'>[];
 };
 
 export default function RouletteSetCardList() {
@@ -16,9 +18,14 @@ export default function RouletteSetCardList() {
     const [rsList, setRsList] = useState<RsItem[]>([]);
     useEffect(() => {
         const getData = async () => {
-            const { data } = await supabase
-                .from('roulette_set')
-                .select('idx, title, description, play_count, user ( nick_name )');
+            const { data } = await supabase.from('roulette_set').select(`idx, title, description, play_count
+                    , user ( nick_name )
+                    , roulette_section (
+                        content,
+                        weight,
+                        location
+                    )
+                    `);
             data && setRsList(data as RsItem[]);
         };
         getData();
