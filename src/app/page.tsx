@@ -11,6 +11,7 @@ import Link from 'next/link';
 import { use } from 'react';
 
 export default function Home() {
+    cookies().getAll();
     const supabase = createServerComponentClient<Database>({ cookies });
     const userData = use(getUser(supabase));
     return (
