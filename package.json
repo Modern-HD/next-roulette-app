@@ -9,7 +9,7 @@
     "lint": "next lint",
     "supabase:gen": "dotenv -e .env.local -- cross-var npx supabase gen types typescript --project-id %PROJECT_ID% --schema public > src/interface/IDatabase.ts",
     "drizzle:gen": "drizzle-kit generate:pg",
-    "start-pm2": "pm2 list && pm2-runtime start ecosystem.config.js"
+    "start:pm2": "pm2 list && pm2-runtime start ecosystem.config.js"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",

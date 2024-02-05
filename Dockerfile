@@ -8,4 +8,4 @@ RUN npm install -g pm2
 COPY ./ ./
 RUN npm run build
 
-ENTRYPOINT [ "npm", "run", "start-pm2" ]
+ENTRYPOINT [ "npm", "run", "start:pm2" ]
