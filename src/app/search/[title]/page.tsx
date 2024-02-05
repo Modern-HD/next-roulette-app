@@ -2,8 +2,12 @@ import HomeBtn from '@/components/button/HomeBtn';
 import SearchBtn from '@/components/button/SearchBtn';
 import RouletteSetCardList from '@/components/card/RouletteSetCardList';
 import Nav from '@/components/nav/Nav';
-import SideBar from '@/components/side-bar/SideBar';
+import { Metadata } from 'next';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
+
+export const metadata: Metadata = {
+    title: '오늘의 룰렛 - 검색',
+};
 
 export default function Search({ params }: { params: Params }) {
     const title = decodeURI(params.title);

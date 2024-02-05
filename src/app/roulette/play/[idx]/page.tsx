@@ -1,44 +1,34 @@
-'use client';
-
 import BackBtn from '@/components/button/BackBtn';
 import HomeBtn from '@/components/button/HomeBtn';
 import Nav from '@/components/nav/Nav';
+import RouletteResetProvider from '@/components/provider/RouletteResetProvider';
 import Roulette from '@/components/roulette/Roulette';
 import RouletteHistory from '@/components/roulette/RouletteHistory';
 import RouletteResultDisplay from '@/components/roulette/RouletteResultDisplay';
 import { Database } from '@/interface/IDatabase';
-import { RootState } from '@/store/configureStore';
-import { roulettePlayReset } from '@/store/rouletteSlice';
 import { fetchPlayableRouletteData } from '@/util/fetchUtil';
-import { createClientComponentClient } from '@supabase/auth-helpers-nextjs';
+import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Metadata } from 'next';
 import { Params } from 'next/dist/shared/lib/router/utils/route-matcher';
-import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { cookies } from 'next/headers';
+import { use } from 'react';
+
+export const metadata: Metadata = {
+    title: '오늘의 룰렛 - 플레이 ',
+};
 
 export default function Play({ params }: { params: Params }) {
-    const dispatch = useDispatch();
-    const supabase = createClientComponentClient<Database>();
-    const roulette = useSelector(({ roulette }: RootState) => roulette);
-    const router = useRouter();
+    cookies().getAll();
+    const supabase = createServerComponentClient<Database>({ cookies });
     const { idx } = params;
-
-    useEffect(() => {
-        fetchPlayableRouletteData(idx, supabase).then(result => {
-            if (!result) {
-                alert('룰렛이 존재하지 않습니다.');
-                return router.replace('/');
-            }
-            dispatch(roulettePlayReset(result));
-        });
-    }, [dispatch, supabase, idx, router]);
+    const roulette = use(fetchPlayableRouletteData(parseInt(idx), supabase));
 
     return (
-        <>
+        <RouletteResetProvider rouletteData={roulette} type={'PLAY'}>
             <div className="flex flex-col h-full">
                 <Nav
                     leftBtn={<BackBtn />}
-                    title={roulette.set?.title}
+                    title={roulette?.set?.title}
                     rightBtn={<HomeBtn />}
                     className="mb-10 md:mb-0"
                 />
@@ -52,6 +42,6 @@ export default function Play({ params }: { params: Params }) {
                 </div>
             </div>
             <RouletteResultDisplay />
-        </>
+        </RouletteResetProvider>
     );
 }

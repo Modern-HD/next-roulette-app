@@ -6,9 +6,14 @@ import SideBar from '@/components/side-bar/SideBar';
 import { Database } from '@/interface/IDatabase';
 import { getUser } from '@/util/auth/authUtil';
 import { createServerComponentClient } from '@supabase/auth-helpers-nextjs';
+import { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import Link from 'next/link';
 import { use } from 'react';
+
+export const metadata: Metadata = {
+    title: '오늘의 룰렛',
+};
 
 export default function Home() {
     cookies().getAll();
