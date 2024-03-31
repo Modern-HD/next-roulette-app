@@ -9,15 +9,15 @@ type RouletteMode = 'IDLE' | 'EDIT' | 'PLAY';
 type Section<T> = T extends 'EDIT'
     ? Omit<IRouletteSection, 'roulette_set_idx' | 'location' | 'idx' | 'created_at' | 'updated_at'>[]
     : T extends 'PLAY'
-    ? IRouletteSection[]
-    : undefined;
+      ? IRouletteSection[]
+      : undefined;
 
 type Set<T> = T extends 'EDIT'
     ? Omit<IRouletteSet, 'idx' | 'created_at' | 'updated_at' | 'user_idx' | 'play_count'> &
           Partial<Pick<IRouletteSet, 'idx' | 'created_at' | 'updated_at' | 'user_idx' | 'play_count'>>
     : T extends 'PLAY'
-    ? IRouletteSet
-    : undefined;
+      ? IRouletteSet
+      : undefined;
 
 type PlayData<T> = T extends 'PLAY' ? IPlayData[] : undefined;
 
